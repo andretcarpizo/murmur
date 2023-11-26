@@ -2,6 +2,8 @@
 name = "murmur"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+description = "A utility for printing colored and formatted messages to the terminal"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
