@@ -10,8 +10,10 @@ keywords = ["terminal", "color", "formatting", "icons","nerdfonts"]
 categories = ["command-line-utilities"]
 
 [dependencies]
+enum-iterator = "1.4.1"
 once_cell = "1.19.0"
 owo-colors = "3.5.0"
+thiserror = "1.0.51"
 tracing = { version = "0.1.40", optional = true }
 
 [features]
@@ -25,7 +27,7 @@ all = "warn"
 pedantic = "warn"
 nursery = "warn"
 cargo = "warn"
-restriction = "warn"
+#restriction = "warn"
 correctness = "warn"
 complexity = "warn"
 perf = "warn"
