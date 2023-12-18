@@ -67,7 +67,7 @@ pub static ICON_MAP: Lazy<Mutex<HashMap<IconKind, (&'static str, &'static str)>>
     });
 
 #[cfg(test)]
-mod tests {
+mod icon_map_tests {
     use super::*;
 
     #[test]
