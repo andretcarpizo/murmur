@@ -3,7 +3,11 @@ name = "murmur"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
-description = "A utility for printing colored and formatted messages to the terminal"
+description = "Utility for formatting colored stdout messages with support for NerdFont or Unicode icons"
+repository = "https://github.com/andretcarpizo/murmur"
+readme = "README.md"
+keywords = ["terminal", "color", "formatting", "icons","nerdfonts"]
+categories = ["command-line-utilities"]
 
 [dependencies]
 once_cell = "1.19.0"
@@ -12,3 +16,27 @@ tracing = { version = "0.1.40", optional = true }
 
 [features]
 default = []
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = "warn"
+pedantic = "warn"
+nursery = "warn"
+cargo = "warn"
+restriction = "warn"
+correctness = "warn"
+complexity = "warn"
+perf = "warn"
+style = "warn"
+shadow_reuse = "allow"
+missing_inline_in_public_items = "allow"
+single_call_fn = "allow"
+implicit_return = "allow"
+missing_const_for_fn = "allow"
+exhaustive_enums = "allow"
+pub_use = "allow"
+
+
+

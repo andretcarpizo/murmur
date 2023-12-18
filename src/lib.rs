@@ -1,4 +1,4 @@
-//! This is the `murmur` crate. This crate provides functionality for formatting print messages with NerdFont or Unicode icons.
+//! This crate provides functionality for formatting print messages with `NerdFont` or `Unicode` icons.
 //! It includes the `Whisper` struct which represents a collection of messages with an optional icon.
 //!
 //! # Example
@@ -14,26 +14,12 @@
 //! ```
 //!
 //! For more details, please refer to the individual modules and struct documentation.
-#![warn(
-clippy::all,
-clippy::restriction,
-clippy::pedantic,
-clippy::nursery,
-clippy::cargo,
-)]
-#![allow(
-clippy::shadow_reuse,
-clippy::missing_inline_in_public_items,
-clippy::single_call_fn,
-clippy::implicit_return,
-clippy::missing_const_for_fn,
-)]
 
 mod icon_map;
 mod color_map;
-
 pub use icon_map::IconKind;
 use core::fmt::{Debug, Display};
+
 
 
 /// Represents a collection of messages with an optional icon and message
@@ -50,7 +36,7 @@ use core::fmt::{Debug, Display};
 /// use murmur::IconKind;
 ///
 /// let whisper = Whisper::new()
-///     .icon(IconKind::NerdFontError)
+///     .icon(IconKind::NerdFontInformation)
 ///     .message("This is a message")
 ///     .whisper();
 /// ```
@@ -208,7 +194,7 @@ impl Whisper {
     ///
     /// * `icon`: A string slice that represents the icon to be printed before each message.
     /// * `color`: A string slice that represents the color of the messages and the icon.
-    #[cfg_attr(feature = "tracing", tracing::instrument)]
+     #[cfg_attr(feature = "tracing", tracing::instrument)]
     fn print_messages(&self, icon: &str, color: &str) {
         let color_map = color_map::initialize();
         let messages = if self.messages.is_empty() {
@@ -219,7 +205,12 @@ impl Whisper {
 
         for (index, message) in messages.iter().enumerate() {
             let prefix = if index == 0 { icon } else { "  " };
-            color_map::display_message(&color_map, color, prefix, message);
+            let result = color_map::display_message(&color_map, color, prefix, message);
+            if let Err(err) = result {
+                eprintln!("Error: {}", &err);
+                #[cfg(feature = "tracing")]
+                tracing::error!("Error: {}", err);
+            }
         }
     }
 }
@@ -365,12 +356,13 @@ mod whisper_tests {
     fn test_message_vec_multiple_messages() {
         // Test for the `message_vec` method when the `messages` vector contains multiple elements.
         let whisper_instance = Whisper::new()
-            .message_vec(vec!["Test message 1", "Test message 2"])
+            .icon(IconKind::NerdFontError)
+            .message_vec(vec!["Test message vec 1", "Test message vec 2"])
             .whisper();
-        assert_eq!(whisper_instance.icon_kind, None);
+        assert_eq!(whisper_instance.icon_kind, Some(IconKind::NerdFontError));
         assert_eq!(
             whisper_instance.messages,
-            vec!["Test message 1", "Test message 2"]
+            vec!["Test message vec 1", "Test message vec 2"]
         );
     }
 
