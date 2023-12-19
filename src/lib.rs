@@ -4,8 +4,7 @@
 //!
 //! [![Crates.io](https://img.shields.io/crates/v/murmur.svg)](https://crates.io/crates/murmur)
 //! [![Documentation](https://docs.rs/murmur/badge.svg)](https://docs.rs/murmur)
-//! [![GitHub](https://img.shields.io/github/stars/yourusername/yourrepository.svg?style=social)](https://github.com/yourusername/yourrepository)
-//!
+//! [![GitHub](https://img.shields.io/github/stars/andretcarpizo/murmur.svg?style=social)](https://github.com/andretcarpizo/murmur)
 //!
 //! ## Usage
 //!
@@ -23,7 +22,8 @@
 //! ```
 //! ## `IconKind` Variants
 //!
-//! The `IconKind` enum variants map to a specific icon and color. Casing conforms to [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/naming.html#casing-conforms-to-idiomatic-rust-style).
+//! The `IconKind` enum variants map to a specific icon, each icon has a default color.
+//! Casing conforms to [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/naming.html#casing-conforms-to-idiomatic-rust-style).
 //!
 //!  * `NfFaCheck`
 //!  * `NfFaTimes`
@@ -33,7 +33,22 @@
 //!  * `UnicodeWarningSign`
 //!  ...
 //!
-//!  for a full list of available icons, see the `IconKind` enum.
+//!  For a full list of the currently supported icons, see the `IconKind` enum.
+//!
+//! # Examples
+//! ```rust
+//! use murmur::{Whisper, IconKind};
+//! use owo_colors::OwoColorize;
+//!
+//!     Whisper::new()
+//!     .icon(IconKind::NfFaCheck) // default color is green
+//!     .message("message") // green
+//!     .message("message".red()) // override this message color to red
+//!     .whisper()
+//!     .unwrap();
+//! ```
+//!
+//!
 //! [NerdFonts cheat-sheet](https://www.nerdfonts.com/cheat-sheet)
 //!
 //! ## `Whisper` methods:
@@ -227,7 +242,10 @@
 //! #[derive(Error, Debug)]
 //! enum CustomError {
 //!    #[error("We can add more info to the error: {0}")]
-//!   WhisperError(#[from] WhisperError),
+//!   MyError(#[from] WhisperError),
+//!
+//!   #[error("We can add more info to the error")]
+//!   OtherError(),
 //! }
 //!
 //! fn thiserror_error_conversion_example() -> Result<(), CustomError> {
@@ -297,10 +315,6 @@ pub struct Whisper {
 
 impl Whisper {
     /// Creates a new `Whisper` instance.
-    ///
-    /// # Returns
-    ///
-    /// A new `Whisper` instance with no icon and an empty message vector.
     ///
     /// # Example
     ///
@@ -568,6 +582,7 @@ mod whisper_color_override_tests {
         Whisper::new()
             .icon(IconKind::NfFaCheck)
             .message("each icon provides a default color but you can override it")
+            .message("this message is red".red())
             .whisper()
             .unwrap();
     }
