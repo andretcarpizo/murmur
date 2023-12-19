@@ -1,19 +1,5 @@
-//! This crate provides functionality for formatting print messages with `NerdFont` or `Unicode` icons.
+//! This crate provides functionality for formatting print messages with `NerdFonts` or `Unicode` icons.
 //! It includes the `Whisper` struct which represents a collection of messages with an optional icon.
-//!
-//! # Example
-//!
-//! ```
-//! use murmur::Whisper;
-//! use murmur::IconKind;
-//!
-//! let whisper = Whisper::new()
-//!     .icon(IconKind::NerdFontInformation)
-//!     .message("This is a message")
-//!     .whisper();
-//! ```
-//!
-//! For more details, please refer to the individual modules and struct documentation.
 mod icon_map;
 pub use icon_map::IconKind;
 
@@ -23,19 +9,24 @@ use core::fmt::{Debug, Display};
 use std::io::{self, BufWriter, Write};
 use thiserror::Error;
 
+/// The `WhisperError` enum represents different kinds of errors that can occur while printing messages.
 #[derive(Debug, Error)]
 pub enum WhisperError {
+    /// Error acquiring lock on ICON_MAP
     #[error("Failed to acquire lock on ICON_MAP")]
-    LockError,
+    Lock,
 
+    /// Error printing message
     #[error("Failed to print message")]
-    PrintError,
+    Print,
 
+    /// Error writing to buffer
     #[error("Error writing to buffer")]
-    WriteError,
+    Write,
 
+    /// Error flushing buffer
     #[error("Error flushing buffer")]
-    FlushError,
+    Flush,
 }
 
 /// Represents a collection of messages with an optional icon and message
@@ -48,6 +39,13 @@ pub enum WhisperError {
 /// # Example
 ///
 /// ```
+/// use murmur::{Whisper, IconKind};
+///
+/// let whisper = Whisper::new()
+///     .icon(IconKind::NfFaBug)
+///     .message("test_whisper_unwrap")
+///     .whisper()
+///     .unwrap();
 /// ```
 #[derive(Debug, Clone, Eq, PartialEq, Default)]
 pub struct Whisper {
@@ -67,9 +65,13 @@ impl Whisper {
     /// # Example
     ///
     /// ```
-    /// use murmur::Whisper;
+    /// use murmur::{Whisper, IconKind};
     ///
-    /// let whisper = Whisper::new();
+    /// let whisper = Whisper::new()
+    ///     .icon(IconKind::NfFaBug)
+    ///     .message("message")
+    ///     .whisper()
+    ///     .unwrap();
     /// ```
     #[must_use]
     pub fn new() -> Self {
@@ -83,7 +85,7 @@ impl Whisper {
     ///
     /// # Arguments
     ///
-    /// * `icon_kind`: The kind of icon to be displayed.
+    /// * `icon_kind`: The kind of icon to be displayed. See the `IconKind` enum for a list of available icons.
     ///
     /// # Returns
     ///
@@ -92,7 +94,19 @@ impl Whisper {
     /// # Examples
     ///
     /// ```
-    /// ```
+    /// use murmur::{Whisper, IconKind};
+    /// let whisper = Whisper::new()
+    ///     .icon(IconKind::NfFaCheck)
+    ///     .message("Nerd Font icons if you have them installed")
+    ///     .message("Another message")
+    ///     .whisper()
+    ///     .expect("Failed to print message");
+    ///
+    /// let whisper = Whisper::new()
+    ///     .icon(IconKind::UnicodeWarningSign)
+    ///     .message("Unicode icons")
+    ///     .whisper()
+    ///     .unwrap_or_else(|err| panic!("Failed to print message: {err}"));
     #[must_use]
     pub fn icon(mut self, icon_kind: IconKind) -> Self {
         self.icon_kind = Some(icon_kind);
@@ -112,6 +126,19 @@ impl Whisper {
     /// # Example
     ///
     /// ```
+    /// use murmur::Whisper;
+    /// let whisper = Whisper::new()
+    ///    .message("1 message without icon")
+    ///    .message("2 message")
+    ///    .message("3 message")
+    ///    .whisper()
+    ///    .unwrap();
+    /// ```
+    /// # Output
+    /// ```text
+    /// 1 message without icon
+    ///   2 message without icon indents by 2 spaces all messages after the first
+    ///   3 message
     /// ```
     #[must_use]
     pub fn message<T: Display + Debug>(mut self, message: T) -> Self {
@@ -132,6 +159,17 @@ impl Whisper {
     /// # Examples
     ///
     /// ```
+    /// use murmur::Whisper;
+    /// let whisper = Whisper::new()
+    ///   .message_vec(vec!["1 message without icon", "2 message", "3 message"])
+    ///   .whisper()
+    ///   .unwrap();
+    /// ```
+    /// # Output
+    /// ```text
+    /// 1 message without icon
+    ///   2 message without icon indents by 2 spaces all messages after the first
+    ///   3 message
     /// ```
     #[must_use]
     pub fn message_vec<T: Display + Debug>(mut self, messages: Vec<T>) -> Self {
@@ -156,18 +194,26 @@ impl Whisper {
     ///
     /// # Errors
     ///
-    /// This function will return `Err(MurmurError::LockError)` if it fails to acquire a lock on the `ICON_MAP`.
-    /// It will return `Err(MurmurError::PrintError)` if there is an error while printing the messages.
+    /// This function will return `WhisperError::Lock` if it fails to acquire a lock on the `ICON_MAP`.
+    /// It will return `WhisperError::Print` if there is an error while printing the messages.
     ///
     /// # Example
     ///
-    /// ```
+    /// ```rust
+    /// use murmur::{Whisper, IconKind};
+    /// use std::io::{Error, ErrorKind};
+    ///
+    /// let whisper = Whisper::new()
+    ///     .icon(IconKind::NfFaBug)
+    ///     .message("test_whisper_unwrap")
+    ///     .whisper()
+    ///     .map_err(|err| Error::new(ErrorKind::Other, err))?;
     /// ```
     pub fn whisper(&self) -> Result<(), WhisperError> {
         // Try to lock the ICON_MAP for safe access in a concurrent environment
         let icon_map = icon_map::ICON_MAP
             .lock()
-            .map_err(|_| WhisperError::LockError)?;
+            .map_err(|_| WhisperError::Lock)?;
 
         // Check the icon_kind field of the Whisper instance
         let (icon, color) = self.icon_kind.clone().map_or(("", ""), |icon_kind| {
@@ -176,7 +222,7 @@ impl Whisper {
 
         // Print the messages with the specified color and an optional icon prefix
         self.print_messages(icon, color)
-            .map_err(|_| WhisperError::PrintError)?;
+            .map_err(|_| WhisperError::Print)?;
 
         Ok(())
     }
@@ -192,7 +238,7 @@ impl Whisper {
     /// For all other messages, the prefix is two spaces.
     ///
     /// Finally, it calls the `murmur_message` function to print each message with the specified color and prefix.
-    /// If there is an error while printing the messages, it returns `Err(MurmurError::PrintError)`.
+    /// If there is an error while printing the messages, it returns `WhisperError::Print`.
     ///
     /// # Arguments
     ///
@@ -205,7 +251,7 @@ impl Whisper {
     ///
     /// # Errors
     ///
-    /// This function will return `Err(MurmurError::PrintError)` if there is an error while printing the messages.
+    /// This function will return `WhisperError::Print` if there is an error while printing the messages.
     fn print_messages(&self, icon: &str, color: &str) -> Result<(), WhisperError> {
         let messages = if self.messages.is_empty() {
             vec![String::new()]
@@ -216,30 +262,24 @@ impl Whisper {
         for (index, message) in messages.iter().enumerate() {
             let prefix = if index == 0 { icon } else { "  " };
             Self::print_message(color, prefix, message)
-                .map_err(|_| WhisperError::PrintError)?;
+                .map_err(|_| WhisperError::Print)?;
         }
         Ok(())
     }
 
-    /// Prints a message with a specific color and an optional icon prefix.
+    /// Prints a message to stdout with a specific color and prefix.
     ///
-    /// This function takes in a reference to a `ColorMap`, a color, a prefix, and a message as parameters.
-    /// The `ColorMap` is used to map color names to functions that colorize a string.
-    /// The color parameter is a string slice that represents the color of the message and the prefix.
-    /// The prefix parameter is a string slice that represents the icon to be printed before the message.
-    /// The message parameter is a string slice that represents the message to be printed.
-    ///
-    /// The function first creates a `BufWriter` with a buffer size of 8192 to write to stdout.
-    /// It then checks if the color exists in the `ColorMap`. If it does, it uses the color function to colorize the prefix and the message.
-    /// If the color does not exist in the `ColorMap`, it prints the prefix and the message as is.
-    ///
-    /// After printing the message, it flushes the `BufWriter` to ensure all data is written to stdout.
+    /// This function is responsible for printing a message to stdout with a specific color and prefix.
+    /// It first creates a buffer writer with a specific buffer size for stdout.
+    /// Then, it checks if the color exists in the `COLOR_MAP`. If it does, it locks the `Mutex` to get a mutable reference to the function.
+    /// After that, it calls the function with the prefix and message as arguments and writes the result to the buffer writer.
+    /// If the color does not exist in the `COLOR_MAP`, it writes the prefix and message directly to the buffer writer.
+    /// Finally, it flushes the buffer writer to ensure that all data is written to stdout.
     ///
     /// # Arguments
     ///
-    /// * `color_map`: A reference to a `ColorMap` that maps color names to functions that colorize a string.
-    /// * `color`: A string slice that represents the color of the message and the prefix.
-    /// * `prefix`: A string slice that represents the icon to be printed before the message.
+    /// * `color`: A string slice that represents the color of the message.
+    /// * `prefix`: A string slice that represents the prefix to be printed before the message.
     /// * `message`: A string slice that represents the message to be printed.
     ///
     /// # Returns
@@ -248,28 +288,31 @@ impl Whisper {
     ///
     /// # Errors
     ///
-    /// This function will return `Err(WhisperError::WriteError)` if there is an error while writing to the `BufWriter`.
-    /// It will return `Err(WhisperError::FlushError)` if there is an error while flushing the `BufWriter`.
-    pub fn print_message(
+    /// This function will return `WhisperError::Lock` if it fails to acquire a lock on the `Mutex`.
+    /// It will return `WhisperError::Write` if there is an error while writing to the buffer.
+    /// It will return `WhisperError::Flush` if there is an error while flushing the buffer.
+    fn print_message(
         color: &str,
         prefix: &str,
         message: &str,
     ) -> Result<(), WhisperError> {
-        /// The capacity of the buffer used to write to stdout.
+        /// The buffer size for stdout, 8192 bytes.
         const BUFFER_SIZE: usize = 8192;
         let stdout = io::stdout();
         let mut writer = BufWriter::with_capacity(BUFFER_SIZE, stdout.lock());
 
         if let Some(color_fn) = color_map::COLOR_MAP.get(color) {
+            let color_fn = color_fn.lock().map_err(|_| WhisperError::Lock)?;
             writeln!(writer, "{}{}", color_fn(prefix), color_fn(message))
-                .map_err(|_| WhisperError::WriteError)?;
+                .map_err(|_| WhisperError::Write)?;
         } else {
-            writeln!(writer, "{prefix}{message}").map_err(|_| WhisperError::WriteError)?;
+            writeln!(writer, "{prefix}{message}").map_err(|_| WhisperError::Write)?;
         }
 
-        writer.flush().map_err(|_| WhisperError::FlushError)?;
+        writer.flush().map_err(|_| WhisperError::Flush)?;
         Ok(())
     }
+
 }
 
 #[cfg(test)]
@@ -284,7 +327,7 @@ mod whisper_tests {
     #[test]
     fn test_whisper_propagate_to_murmur_error() -> Result<(), WhisperError> {
         Whisper::new()
-            .icon(IconKind::NerdFontDebugging)
+            .icon(IconKind::NfFaBug)
             .message("test_whisper_propagate_to_murmur_error")
             .whisper()?;
         Ok(())
@@ -298,7 +341,7 @@ mod whisper_tests {
     #[test]
     fn test_whisper_unwrap() {
         Whisper::new()
-            .icon(IconKind::NerdFontDebugging)
+            .icon(IconKind::NfFaBug)
             .message("test_whisper_unwrap")
             .whisper()
             .unwrap();
@@ -312,10 +355,19 @@ mod whisper_tests {
     #[test]
     fn test_whisper_unwrap_or_else() {
         Whisper::new()
-            .icon(IconKind::NerdFontDebugging)
+            .icon(IconKind::NfFaBug)
             .message("test_whisper_unwrap_or_else")
             .whisper()
             .unwrap_or_else(|err| panic!("Failed to print message: {err}"));
+    }
+
+    #[test]
+    fn test_whisper_unwrap_eprintln() {
+        Whisper::new()
+            .icon(IconKind::NfFaBug)
+            .message("test_whisper_eprintln")
+            .whisper()
+            .unwrap_or_else(|err| eprintln!("Failed to print message: {err}"));
     }
 
     /// Test for expecting a `Whisper` instance to be `Ok`.
@@ -326,7 +378,7 @@ mod whisper_tests {
     #[test]
     fn test_whisper_expect() {
         Whisper::new()
-            .icon(IconKind::NerdFontDebugging)
+            .icon(IconKind::NfFaBug)
             .message("test_whisper_unwrap")
             .whisper()
             .expect("Failed to print message");
@@ -341,7 +393,7 @@ mod whisper_tests {
     #[test]
     fn test_whisper_map_err_and_propagate_io_error() -> Result<(), Error> {
         Whisper::new()
-            .icon(IconKind::NerdFontDebugging)
+            .icon(IconKind::NfFaBug)
             .message("test_whisper_user_api_map_err_and_propagate_io_error")
             .whisper()
             .map_err(|err| Error::new(ErrorKind::Other, err))?;
@@ -356,7 +408,7 @@ mod whisper_tests {
     #[test]
     fn test_whisper_map_err_and_propagate_to_custom_error() -> Result<(), CustomError> {
         Whisper::new()
-            .icon(IconKind::NerdFontDebugging)
+            .icon(IconKind::NfFaBug)
             .message("test_whisper_user_api_map_err_and_propagate_to_custom_error")
             .whisper()
             .map_err(|err| CustomError::from(err))?;
@@ -371,7 +423,7 @@ mod whisper_tests {
     #[test]
     fn test_whisper_ok_discard_error_if_any () {
         Whisper::new()
-            .icon(IconKind::NerdFontDebugging)
+            .icon(IconKind::NfFaBug)
             .message("test_whisper_ok_discard_error_if_any")
             .whisper()
             .ok();
@@ -385,7 +437,7 @@ mod whisper_tests {
     #[test]
     fn test_whisper_or_else () -> Result<(), WhisperError> {
         Whisper::new()
-            .icon(IconKind::NerdFontDebugging)
+            .icon(IconKind::NfFaBug)
             .message("test_whisper_or_else")
             .whisper()
             .or_else(|err| Err(err))
@@ -412,7 +464,7 @@ mod whisper_tests {
     fn test_whisper_map_err_and_propagate_to_original_error_and_custom_error(
     ) -> Result<(), CustomError> {
         Whisper::new()
-            .icon(IconKind::NerdFontDebugging)
+            .icon(IconKind::NfFaBug)
             .message("test_whisper_map_err_and_propagate_to_original_error_and_custom_error")
             .whisper()
             .map_err(|err| CustomError::from(err))?; // Ok or Convert from WhisperError to CustomError, pass the original error and Propagate Error
@@ -425,7 +477,7 @@ mod whisper_tests {
     fn test_whisper_map_err_and_convert_to_custom_error_discard_original_error(
     ) -> Result<(), CustomError> {
         Whisper::new()
-            .icon(IconKind::NerdFontDebugging)
+            .icon(IconKind::NfFaBug)
             .message("test_whisper_map_err_and_convert_to_custom_error_discard_original_error")
             .whisper()
             .map_err(CustomError::from)?; // Ok or Convert from WhisperError to CustomError and Propagate Error, dont pass the original
@@ -435,7 +487,7 @@ mod whisper_tests {
     #[test]
     fn test_whisper_match() {
         let whisper = Whisper::new()
-            .icon(IconKind::NerdFontDebugging)
+            .icon(IconKind::NfFaBug)
             .message("test_whisper_match");
 
         match whisper.whisper() {
@@ -485,10 +537,10 @@ mod whisper_tests {
     #[test]
     fn test_whisper_icon_no_message() {
         // After
-        let whisper = Whisper::new().icon(IconKind::NerdFontDebugging);
+        let whisper = Whisper::new().icon(IconKind::NfFaBug);
         let result = whisper.whisper();
         assert!(result.is_ok());
-        assert_eq!(whisper.icon_kind, Some(IconKind::NerdFontDebugging));
+        assert_eq!(whisper.icon_kind, Some(IconKind::NfFaBug));
         assert_eq!(whisper.messages, Vec::<String>::new());
     }
 
@@ -496,11 +548,11 @@ mod whisper_tests {
     fn test_whisper_icon_message() {
         // After
         let whisper = Whisper::new()
-            .icon(IconKind::NerdFontInformation)
+            .icon(IconKind::NfFaInfoCircle)
             .message("message with icon");
         let result = whisper.whisper();
         assert!(result.is_ok());
-        assert_eq!(whisper.icon_kind, Some(IconKind::NerdFontInformation));
+        assert_eq!(whisper.icon_kind, Some(IconKind::NfFaInfoCircle));
         assert_eq!(whisper.messages.as_slice(), &["message with icon"]);
     }
 
@@ -508,13 +560,13 @@ mod whisper_tests {
     fn test_whisper_icon_multiple_messages() {
         // After
         let whisper = Whisper::new()
-            .icon(IconKind::NerdFontWarning)
+            .icon(IconKind::NfFaWarning)
             .message("First message")
             .message("Second message")
             .message("Third message");
         let result = whisper.whisper();
         assert!(result.is_ok());
-        assert_eq!(whisper.icon_kind, Some(IconKind::NerdFontWarning));
+        assert_eq!(whisper.icon_kind, Some(IconKind::NfFaWarning));
         assert_eq!(
             whisper.messages.as_slice(),
             &["First message", "Second message", "Third message"]
@@ -525,13 +577,13 @@ mod whisper_tests {
     fn test_whisper_icon_multiple_messages_message_vec() {
         // After
         let whisper = Whisper::new()
-            .icon(IconKind::NerdFontSuccess)
+            .icon(IconKind::NfFaCheck)
             .message("First message")
             .message("Second message")
             .message_vec(vec!["Third message", "Fourth message"]);
         let result = whisper.whisper();
         assert!(result.is_ok());
-        assert_eq!(whisper.icon_kind, Some(IconKind::NerdFontSuccess));
+        assert_eq!(whisper.icon_kind, Some(IconKind::NfFaCheck));
         assert_eq!(
             whisper.messages.as_slice(),
             &[
@@ -546,7 +598,7 @@ mod whisper_tests {
     #[test]
     fn test_whisper_icon_multiple_message_vec() {
         let whisper = Whisper::new()
-            .icon(IconKind::NerdFontWarning)
+            .icon(IconKind::NfFaWarning)
             .message_vec(vec!["Line", "Another line"])
             .message_vec(vec!["Another line"]);
         let result = whisper.whisper();
@@ -560,7 +612,7 @@ mod whisper_tests {
     #[test]
     fn test_icon_multiple_message_vec_message() {
         let whisper = Whisper::new()
-            .icon(IconKind::NerdFontWarning)
+            .icon(IconKind::NfFaWarning)
             .message_vec(vec!["Line", "Another line"])
             .message_vec(vec!["Another line"]);
         let result = whisper.whisper();
@@ -584,11 +636,11 @@ mod whisper_tests {
     fn test_message_vec_multiple_messages() {
         // Test for the `message_vec` method when the `messages` vector contains multiple elements.
         let whisper = Whisper::new()
-            .icon(IconKind::NerdFontError)
+            .icon(IconKind::NfFaTimes)
             .message_vec(vec!["Test message vec 1", "Test message vec 2"]);
         let result = whisper.whisper();
         assert!(result.is_ok());
-        assert_eq!(whisper.icon_kind, Some(IconKind::NerdFontError));
+        assert_eq!(whisper.icon_kind, Some(IconKind::NfFaTimes));
         assert_eq!(
             whisper.messages,
             vec!["Test message vec 1", "Test message vec 2"]
@@ -600,11 +652,11 @@ mod whisper_tests {
         //Test adding icon in the middle of messages
         let whisper = Whisper::new()
             .message("Test adding icon in random place")
-            .icon(IconKind::NerdFontDebugging)
+            .icon(IconKind::NfFaBug)
             .message("icon should be added to the first message");
         let result = whisper.whisper();
         assert!(result.is_ok());
-        assert_eq!(whisper.icon_kind, Some(IconKind::NerdFontDebugging));
+        assert_eq!(whisper.icon_kind, Some(IconKind::NfFaBug));
         assert_eq!(
             whisper.messages,
             vec![
@@ -626,10 +678,10 @@ mod whisper_tests {
 
         whisper = whisper
             .message("Append a message and icon after creation")
-            .icon(IconKind::NerdFontInformation);
+            .icon(IconKind::NfFaInfoCircle);
         let result = whisper.whisper();
         assert!(result.is_ok());
-        assert_eq!(whisper.icon_kind, Some(IconKind::NerdFontInformation));
+        assert_eq!(whisper.icon_kind, Some(IconKind::NfFaInfoCircle));
         assert_eq!(
             whisper.messages,
             vec![
@@ -643,18 +695,18 @@ mod whisper_tests {
     fn test_whisper_default() {
         // Test default
         let whisper = Whisper::default()
-            .icon(IconKind::NerdFontProcessing)
+            .icon(IconKind::NfFaRefresh)
             .message("Test default");
         let result = whisper.whisper();
         assert!(result.is_ok());
-        assert_eq!(whisper.icon_kind, Some(IconKind::NerdFontProcessing));
+        assert_eq!(whisper.icon_kind, Some(IconKind::NfFaRefresh));
     }
 
     #[test]
     fn test_whisper_very_long_message() {
         let long_message = "a".repeat(10000);
         let whisper = Whisper::new()
-            .icon(IconKind::NerdFontDebugging)
+            .icon(IconKind::NfFaBug)
             .message(long_message.clone());
         let result = whisper.whisper();
         assert!(result.is_ok());
@@ -665,7 +717,7 @@ mod whisper_tests {
     fn test_whisper_special_characters_in_message() {
         let special_message = "!@#$%^&*()";
         let whisper = Whisper::new()
-            .icon(IconKind::NerdFontDebugging)
+            .icon(IconKind::NfFaBug)
             .message(special_message);
         let result = whisper.whisper();
         assert!(result.is_ok());
@@ -676,7 +728,7 @@ mod whisper_tests {
     fn test_whisper_large_number_of_messages() {
         let messages = vec!["Test message".to_string(); 10000];
         let whisper = Whisper::new()
-            .icon(IconKind::NerdFontDebugging)
+            .icon(IconKind::NfFaBug)
             .message_vec(messages.clone());
         let result = whisper.whisper();
         assert!(result.is_ok());
@@ -692,25 +744,25 @@ mod whisper_error_tests {
 
     #[test]
     fn whisper_error_lock_error() {
-        let error = WhisperError::LockError;
+        let error = WhisperError::Lock;
         assert_eq!(format!("{}", error), "Failed to acquire lock on ICON_MAP");
     }
 
     #[test]
     fn whisper_error_print_error() {
-        let error = WhisperError::PrintError;
+        let error = WhisperError::Print;
         assert_eq!(format!("{}", error), "Failed to print message");
     }
 
     #[test]
     fn whisper_error_write_error() {
-        let error = WhisperError::WriteError;
+        let error = WhisperError::Write;
         assert_eq!(format!("{}", error), "Error writing to buffer");
     }
 
     #[test]
     fn whisper_error_flush_error() {
-        let error = WhisperError::FlushError;
+        let error = WhisperError::Flush;
         assert_eq!(format!("{}", error), "Error flushing buffer");
     }
 }

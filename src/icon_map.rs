@@ -1,27 +1,46 @@
-//! Module containing the icon map for formatting messages.
-
+//! The `icon_map` module provides functionality for mapping `IconKind` enum variants to their corresponding icons and colors.
+//! It contains a `Lazy` static `ICON_MAP` which is a thread-safe `HashMap` that maps `IconKind` enum variants to a tuple of an icon and a color.
+//! The `ICON_MAP` is used by the `Whisper` struct to look up the icon and color based on the `IconKind`.
+//! The `ICON_MAP` is lazily initialized and contains mappings for both `NerdFont` and Unicode icons.
+//!
+//! The `IconKind` enum represents different kinds of icons for formatting messages. It supports both Unicode or Nerd Font icons if you have a Nerd Font installed.
+//!
 use enum_iterator::Sequence;
 use once_cell::sync::Lazy;
 use std::fmt;
 use std::{collections::HashMap, sync::Mutex};
 
-/// Enum representing different kinds of icons for formatting messages.
-/// Unicode or Nerd Font icons if you have a Nerd Font installed.
+/// `IconKind` is an enum representing different kinds of icons for formatting messages.
+/// Supports both `Unicode` and `NerdFonts` icons if you have a Nerd Font installed.
+///
+///  # Examples
+/// ```
+/// use murmur::{Whisper, IconKind};
+///
+/// Whisper::new()
+///     .icon(IconKind::NfFaTimes)
+///     .message("This is a message with a Nerd Font icon.")
+///     .whisper()
+///     .unwrap();
+///
+/// ```
+///
+/// [Nerd Fonts Cheat Sheet](https://www.nerdfonts.com/cheat-sheet)
 #[derive(Debug, Clone, Eq, PartialEq, Hash, Sequence)]
 pub enum IconKind {
-    NerdFontError,
-    NerdFontSuccess,
-    NerdFontInformation,
-    NerdFontProcessing,
-    NerdFontWarning,
-    NerdFontDebugging,
+    NfFaTimes,
+    NfFaCheck,
+    NfFaInfoCircle,
+    NfFaRefresh,
+    NfFaWarning,
+    NfFaBug,
 
-    UnicodeError,
-    UnicodeSuccess,
-    UnicodeInformation,
-    UnicodeProcessing,
-    UnicodeWarning,
-    UnicodeDebugging,
+    UnicodeCrossMark,
+    UnicodeCheckMark,
+    UnicodeInformationSource,
+    UnicodeGear,
+    UnicodeWarningSign,
+    UnicodeBug,
 }
 
 /// Implement the `Display` trait for `IconKind`.
@@ -43,20 +62,20 @@ pub static ICON_MAP: Lazy<Mutex<HashMap<IconKind, (&'static str, &'static str)>>
     Lazy::new(|| {
         let mut icon_map = HashMap::new();
         // Nerd Font icons
-        icon_map.insert(IconKind::NerdFontError, (" ", "red"));
-        icon_map.insert(IconKind::NerdFontSuccess, (" ", "green"));
-        icon_map.insert(IconKind::NerdFontInformation, (" ", "white"));
-        icon_map.insert(IconKind::NerdFontProcessing, (" ", "cyan"));
-        icon_map.insert(IconKind::NerdFontWarning, (" ", "yellow"));
-        icon_map.insert(IconKind::NerdFontDebugging, (" ", "red"));
+        icon_map.insert(IconKind::NfFaTimes, ("\u{f00d} ", "red")); // 
+        icon_map.insert(IconKind::NfFaCheck, ("\u{f00c} ", "green")); // 
+        icon_map.insert(IconKind::NfFaInfoCircle, ("\u{f05a} ", "white")); // 
+        icon_map.insert(IconKind::NfFaRefresh, ("\u{f021} ", "cyan")); // 
+        icon_map.insert(IconKind::NfFaWarning, ("\u{f071} ", "yellow")); // 
+        icon_map.insert(IconKind::NfFaBug, ("\u{f188}  ", "red")); // 
 
         // Unicode icons
-        icon_map.insert(IconKind::UnicodeError, ("❌ ", "red"));
-        icon_map.insert(IconKind::UnicodeSuccess, ("✔️ ", "green"));
-        icon_map.insert(IconKind::UnicodeInformation, ("ℹ️ ", "white"));
-        icon_map.insert(IconKind::UnicodeProcessing, ("⚙️ ", "cyan"));
-        icon_map.insert(IconKind::UnicodeWarning, ("⚠️ ", "yellow"));
-        icon_map.insert(IconKind::UnicodeDebugging, ("🐛 ", "yellow"));
+        icon_map.insert(IconKind::UnicodeCrossMark, ("\u{274C} ", "red")); // ❌
+        icon_map.insert(IconKind::UnicodeCheckMark, ("\u{2714}\u{FE0F} ", "green")); // ✔️
+        icon_map.insert(IconKind::UnicodeInformationSource, ("\u{2139}\u{FE0F} ", "white")); // ℹ️
+        icon_map.insert(IconKind::UnicodeGear, ("\u{2699}\u{FE0F} ", "cyan")); // ⚙️
+        icon_map.insert(IconKind::UnicodeWarningSign, ("\u{26A0}\u{FE0F} ", "yellow")); // ⚠️
+        icon_map.insert(IconKind::UnicodeBug, ("\u{1F41B} ", "red")); // 🐛
 
         Mutex::new(icon_map)
     });

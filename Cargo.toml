@@ -15,6 +15,9 @@ once_cell = "1.19.0"
 owo-colors = "3.5.0"
 thiserror = "1.0.51"
 
+[dev-dependencies]
+
+
 [features]
 default = []
 
@@ -22,15 +25,17 @@ default = []
 unsafe_code = "forbid"
 
 [lints.clippy]
-all = "warn"
-pedantic = "warn"
-nursery = "warn"
+missing_docs_in_private_items = "deny"
 cargo = "warn"
-restriction = "warn"
-correctness = "warn"
 complexity = "warn"
+correctness = "warn"
+nursery = "warn"
+pedantic = "warn"
 perf = "warn"
 style = "warn"
+suspicious = "warn"
+#restriction = "warn" #don't do it!
+non_ascii_literal = "warn"
 shadow_reuse = "allow"
 missing_inline_in_public_items = "allow"
 single_call_fn = "allow"

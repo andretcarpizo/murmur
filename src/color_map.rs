@@ -1,19 +1,30 @@
-//! This module contains functionality to print messages to stdout based on a color hash map.
-
+//! The `color_map` module provides functionality for mapping color names to their corresponding color functions.
+//! It contains a `Lazy` static `COLOR_MAP` which is a thread-safe `HashMap` that maps color names to color functions.
+//!
+//! The `COLOR_MAP` is used to apply color to text based on the color name.
+//! The `COLOR_MAP` is lazily initialized and contains mappings for the colors "red", "green", "white", "cyan", and "yellow".
+//!
+use std::sync::{Arc, Mutex};
 use owo_colors::OwoColorize;
 use std::collections::HashMap;
 use once_cell::sync::Lazy;
 
-type ColorFunction = Box<dyn Fn(&str) -> String>;
+/// `ColorFunction` is a type alias for a thread-safe function pointer that takes a string slice and returns a colored string.
+/// The function is wrapped in an `Arc<Mutex<_>>` to allow it to be shared and mutated across threads.
+type ColorFunction = Arc<Mutex<dyn Fn(&str) -> String + Send>>;
+
+/// `ColorMapType` is a type alias for a `HashMap` where the key is a static string slice representing the color name,
+/// and the value is a `ColorFunction` which applies the corresponding color to a given string.
 type ColorMapType = HashMap<&'static str, ColorFunction>;
 
+/// A static `COLOR_MAP` that maps color names to color functions.
 pub static COLOR_MAP: Lazy<ColorMapType> = Lazy::new(|| {
     let mut map: ColorMapType = HashMap::new();
-    map.insert("red", Box::new(|text| text.red().to_string()));
-    map.insert("green", Box::new(|text| text.green().to_string()));
-    map.insert("white", Box::new(|text| text.white().to_string()));
-    map.insert("cyan", Box::new(|text| text.cyan().to_string()));
-    map.insert("yellow", Box::new(|text| text.yellow().to_string()));
+    map.insert("red", Arc::new(Mutex::new(|text: &str | text.red().to_string())));
+    map.insert("green", Arc::new(Mutex::new(|text:&str| text.green().to_string())));
+    map.insert("white", Arc::new(Mutex::new(|text:&str| text.white().to_string())));
+    map.insert("cyan", Arc::new(Mutex::new(|text:&str| text.cyan().to_string())));
+    map.insert("yellow", Arc::new(Mutex::new(|text:&str| text.yellow().to_string())));
 
     map
 });
@@ -23,35 +34,27 @@ mod color_map_tests {
     use super::*;
 
     #[test]
-    fn color_map_initializes_with_correct_colors() {
-        let color_map = ColorMap::new();
-
-        assert_eq!(color_map.map.get("red").is_some(), true);
-        assert_eq!(color_map.map.get("green").is_some(), true);
-        assert_eq!(color_map.map.get("white").is_some(), true);
-        assert_eq!(color_map.map.get("cyan").is_some(), true);
-        assert_eq!(color_map.map.get("yellow").is_some(), true);
+    fn color_map_contains_expected_colors() {
+        let expected_colors = vec!["red", "green", "white", "cyan", "yellow"];
+        for color in expected_colors {
+            assert!(COLOR_MAP.contains_key(color));
+        }
     }
 
     #[test]
-    fn color_map_returns_none_for_nonexistent_color() {
-        let color_map = ColorMap::new();
-
-        assert_eq!(color_map.map.get("purple").is_some(), false);
+    fn color_map_applies_correct_color() {
+        let red_text = (COLOR_MAP.get("red").unwrap().lock().unwrap())("test");
+        assert_eq!(red_text, "test".red().to_string());
     }
 
     #[test]
-    fn color_map_applies_correct_color_function() {
-        let color_map = ColorMap::new();
-        let red_function = color_map.map.get("red").unwrap();
-
-        assert_eq!(red_function("test"), "test".red().to_string());
+    fn color_map_returns_none_for_unknown_color() {
+        assert!(COLOR_MAP.get("unknown_color").is_none());
     }
 
     #[test]
-    fn color_map_default_initializes_empty_map() {
-        let color_map = ColorMap::default();
-
-        assert_eq!(color_map.map.is_empty(), true);
+    fn color_map_handles_empty_string() {
+        let red_text = (COLOR_MAP.get("red").unwrap().lock().unwrap())("");
+        assert_eq!(red_text, "".red().to_string());
     }
 }
