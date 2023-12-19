@@ -24,6 +24,7 @@ pub enum IconKind {
     UnicodeDebugging,
 }
 
+/// Implement the `Display` trait for `IconKind`.
 impl fmt::Display for IconKind {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{self:?}")
@@ -56,9 +57,6 @@ pub static ICON_MAP: Lazy<Mutex<HashMap<IconKind, (&'static str, &'static str)>>
         icon_map.insert(IconKind::UnicodeProcessing, ("⚙️ ", "cyan"));
         icon_map.insert(IconKind::UnicodeWarning, ("⚠️ ", "yellow"));
         icon_map.insert(IconKind::UnicodeDebugging, ("🐛 ", "yellow"));
-
-        #[cfg(feature = "tracing")]
-        tracing::info!("ICON_MAP initialized");
 
         Mutex::new(icon_map)
     });

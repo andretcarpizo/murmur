@@ -14,26 +14,29 @@
 //! ```
 //!
 //! For more details, please refer to the individual modules and struct documentation.
-
 mod icon_map;
 pub use icon_map::IconKind;
 
 mod color_map;
+
 use color_map::ColorMap;
-
-mod murmuro;
-use murmuro::murmur_message;
-
 use core::fmt::{Debug, Display};
-
+use std::io::{self, BufWriter, Write};
 use thiserror::Error;
 
 #[derive(Debug, Error)]
-pub enum MurmurError {
+pub enum WhisperError {
     #[error("Failed to acquire lock on ICON_MAP")]
     LockError,
+
     #[error("Failed to print message")]
     PrintError,
+
+    #[error("Error writing to buffer")]
+    WriteError,
+
+    #[error("Error flushing buffer")]
+    FlushError,
 }
 
 /// Represents a collection of messages with an optional icon and message
@@ -46,13 +49,6 @@ pub enum MurmurError {
 /// # Example
 ///
 /// ```
-/// use murmur::Whisper;
-/// use murmur::IconKind;
-///
-/// let whisper = Whisper::new()
-///     .icon(IconKind::NerdFontInformation)
-///     .message("This is a message")
-///     .whisper();
 /// ```
 #[derive(Debug, Clone, Eq, PartialEq, Default)]
 pub struct Whisper {
@@ -77,7 +73,6 @@ impl Whisper {
     /// let whisper = Whisper::new();
     /// ```
     #[must_use]
-    #[cfg_attr(feature = "tracing", tracing::instrument)]
     pub fn new() -> Self {
         Self {
             icon_kind: None,
@@ -98,16 +93,8 @@ impl Whisper {
     /// # Examples
     ///
     /// ```
-    /// use murmur::Whisper;
-    /// use murmur::IconKind;
-    ///
-    /// let whisper = Whisper::new()
-    ///     .icon(IconKind::NerdFontError)
-    ///     .message("This is a message")
-    ///     .whisper();
     /// ```
     #[must_use]
-    #[cfg_attr(feature = "tracing", tracing::instrument)]
     pub fn icon(mut self, icon_kind: IconKind) -> Self {
         self.icon_kind = Some(icon_kind);
         self
@@ -125,15 +112,9 @@ impl Whisper {
     ///
     /// # Example
     ///
-    /// ```rust
-    /// use murmur::Whisper;
-    ///
-    /// let whisper = Whisper::new()
-    ///     .message("This is a message")
-    ///     .whisper();
+    /// ```
     /// ```
     #[must_use]
-    #[cfg_attr(feature = "tracing", tracing::instrument)]
     pub fn message<T: Display + Debug>(mut self, message: T) -> Self {
         self.messages.push(message.to_string());
         self
@@ -152,14 +133,8 @@ impl Whisper {
     /// # Examples
     ///
     /// ```
-    /// use murmur::Whisper;
-    ///
-    /// let whisper = Whisper::new()
-    ///     .message_vec(vec!["This is a message", "This is another message"])
-    ///     .whisper();
     /// ```
     #[must_use]
-    #[cfg_attr(feature = "tracing", tracing::instrument)]
     pub fn message_vec<T: Display + Debug>(mut self, messages: Vec<T>) -> Self {
         for message in messages {
             self.messages.push(message.to_string());
@@ -187,31 +162,13 @@ impl Whisper {
     ///
     /// # Example
     ///
-    /// ```rust
-    /// use murmur::Whisper;
-    /// use murmur::IconKind;
-    ///
-    /// let whisper = Whisper::new()
-    ///     .icon(IconKind::NerdFontInformation)
-    ///     .message("This is a message");
-    ///
-    /// match whisper.whisper() {
-    ///     Ok(_) => println!("Message printed successfully"),
-    ///     Err(e) => eprintln!("Failed to print message: {}", e),
-    /// }
     /// ```
-    #[cfg_attr(feature = "tracing", tracing::instrument)]
-    pub fn whisper(&self) -> Result<(), MurmurError> {
+    /// ```
+    pub fn whisper(&self) -> Result<(), WhisperError> {
         // Try to lock the ICON_MAP for safe access in a concurrent environment
-        let icon_map = match icon_map::ICON_MAP.lock() {
-            Ok(icon_map) => icon_map,
-            Err(err) => {
-                eprintln!("Error: {}", &err);
-                #[cfg(feature = "tracing")]
-                tracing::warn!("Error: {}", &err);
-                return Err(MurmurError::LockError);
-            }
-        };
+        let icon_map = icon_map::ICON_MAP
+            .lock()
+            .map_err(|_| WhisperError::LockError)?;
 
         // Check the icon_kind field of the Whisper instance
         let (icon, color) = self.icon_kind.clone().map_or(("", ""), |icon_kind| {
@@ -219,18 +176,9 @@ impl Whisper {
         });
 
         // Print the messages with the specified color and an optional icon prefix
-       self.murmur_messages(icon, color).map_err(|err| {
-            eprintln!("Error: {}", &err);
-            #[cfg(feature = "tracing")]
-            tracing::error!("Error: {}", &err);
-            MurmurError::PrintError
-        })?;
+        self.print_messages(icon, color)
+            .map_err(|_| WhisperError::PrintError)?;
 
-
-        #[cfg(feature = "tracing")]
-        tracing::info!("Printed messages with icon and color");
-
-        // Return Ok to indicate successful operation
         Ok(())
     }
 
@@ -259,8 +207,7 @@ impl Whisper {
     /// # Errors
     ///
     /// This function will return `Err(MurmurError::PrintError)` if there is an error while printing the messages.
-    #[cfg_attr(feature = "tracing", tracing::instrument)]
-    fn murmur_messages(&self, icon: &str, color: &str) -> Result<(), MurmurError> {
+    fn print_messages(&self, icon: &str, color: &str) -> Result<(), WhisperError> {
         let color_map = ColorMap::new();
         let messages = if self.messages.is_empty() {
             vec![String::new()]
@@ -270,13 +217,60 @@ impl Whisper {
 
         for (index, message) in messages.iter().enumerate() {
             let prefix = if index == 0 { icon } else { "  " };
-            murmur_message(&color_map, color, prefix, message).map_err(|err| {
-                eprintln!("Error: {}", &err);
-                #[cfg(feature = "tracing")]
-                tracing::error!("Error: {}", &err);
-                MurmurError::PrintError
-            })?;
+            Self::print_message(&color_map, color, prefix, message)
+                .map_err(|_| WhisperError::PrintError)?;
         }
+        Ok(())
+    }
+
+    /// Prints a message with a specific color and an optional icon prefix.
+    ///
+    /// This function takes in a reference to a `ColorMap`, a color, a prefix, and a message as parameters.
+    /// The `ColorMap` is used to map color names to functions that colorize a string.
+    /// The color parameter is a string slice that represents the color of the message and the prefix.
+    /// The prefix parameter is a string slice that represents the icon to be printed before the message.
+    /// The message parameter is a string slice that represents the message to be printed.
+    ///
+    /// The function first creates a `BufWriter` with a buffer size of 8192 to write to stdout.
+    /// It then checks if the color exists in the `ColorMap`. If it does, it uses the color function to colorize the prefix and the message.
+    /// If the color does not exist in the `ColorMap`, it prints the prefix and the message as is.
+    ///
+    /// After printing the message, it flushes the `BufWriter` to ensure all data is written to stdout.
+    ///
+    /// # Arguments
+    ///
+    /// * `color_map`: A reference to a `ColorMap` that maps color names to functions that colorize a string.
+    /// * `color`: A string slice that represents the color of the message and the prefix.
+    /// * `prefix`: A string slice that represents the icon to be printed before the message.
+    /// * `message`: A string slice that represents the message to be printed.
+    ///
+    /// # Returns
+    ///
+    /// This function returns a `Result`. If the operation is successful, it returns `Ok(())`. If there is an error during the operation, it returns `Err(WhisperError)`.
+    ///
+    /// # Errors
+    ///
+    /// This function will return `Err(WhisperError::WriteError)` if there is an error while writing to the `BufWriter`.
+    /// It will return `Err(WhisperError::FlushError)` if there is an error while flushing the `BufWriter`.
+    pub fn print_message(
+        color_map: &ColorMap,
+        color: &str,
+        prefix: &str,
+        message: &str,
+    ) -> Result<(), WhisperError> {
+        /// The capacity of the buffer used to write to stdout.
+        const BUFFER_SIZE: usize = 8192;
+        let stdout = io::stdout();
+        let mut writer = BufWriter::with_capacity(BUFFER_SIZE, stdout.lock());
+
+        if let Some(color_fn) = color_map.map.get(color) {
+            writeln!(writer, "{}{}", color_fn(prefix), color_fn(message))
+                .map_err(|_| WhisperError::WriteError)?;
+        } else {
+            writeln!(writer, "{prefix}{message}").map_err(|_| WhisperError::WriteError)?;
+        }
+
+        writer.flush().map_err(|_| WhisperError::FlushError)?;
         Ok(())
     }
 }
@@ -285,9 +279,13 @@ impl Whisper {
 mod whisper_tests {
     use super::*;
     use std::io::{Error, ErrorKind};
-
+    /// Test for propagating a `WhisperError`.
+    ///
+    /// This test creates a new `Whisper` instance, sets the icon and message,
+    /// and calls the `whisper` method.
+    /// If an error occurs, it is propagated up the call stack, the error is not converted. from its original type.
     #[test]
-    fn test_whisper_propagate_to_murmur_error() -> Result<(), MurmurError> {
+    fn test_whisper_propagate_to_murmur_error() -> Result<(), WhisperError> {
         Whisper::new()
             .icon(IconKind::NerdFontDebugging)
             .message("test_whisper_propagate_to_murmur_error")
@@ -295,8 +293,13 @@ mod whisper_tests {
         Ok(())
     }
 
+    /// Test for unwrapping a `Whisper` instance.
+    ///
+    /// This test creates a new `Whisper` instance, sets the icon and message,
+    /// and calls the `whisper` method.
+    /// If an error occurs, the test will panic.
     #[test]
-    fn test_whisper_unwrap()  {
+    fn test_whisper_unwrap() {
         Whisper::new()
             .icon(IconKind::NerdFontDebugging)
             .message("test_whisper_unwrap")
@@ -304,6 +307,40 @@ mod whisper_tests {
             .unwrap();
     }
 
+    /// Test for unwrapping a `Whisper` instance or panicking with a custom message.
+    ///
+    /// This test creates a new `Whisper` instance, sets the icon and message,
+    /// and calls the `whisper` method.
+    /// If an error occurs, the test will panic with a custom message.
+    #[test]
+    fn test_whisper_unwrap_or_else() {
+        Whisper::new()
+            .icon(IconKind::NerdFontDebugging)
+            .message("test_whisper_unwrap_or_else")
+            .whisper()
+            .unwrap_or_else(|err| panic!("Failed to print message: {err}"));
+    }
+
+    /// Test for expecting a `Whisper` instance to be `Ok`.
+    ///
+    /// This test creates a new `Whisper` instance, sets the icon and message,
+    /// and calls the `whisper` method.
+    /// If an error occurs, the test will panic with a custom message.
+    #[test]
+    fn test_whisper_expect() {
+        Whisper::new()
+            .icon(IconKind::NerdFontDebugging)
+            .message("test_whisper_unwrap")
+            .whisper()
+            .expect("Failed to print message");
+    }
+
+    /// Test for propagating a `WhisperError` as an `io::Error`.
+    ///
+    /// This test creates a new `Whisper` instance, sets the icon and message,
+    /// and calls the `whisper` method.
+    /// If a `WhisperError` occurs, it is converted to an `io::Error` and propagated up the call stack.
+    /// The test will pass if no error occurs.
     #[test]
     fn test_whisper_map_err_and_propagate_io_error() -> Result<(), Error> {
         Whisper::new()
@@ -314,6 +351,62 @@ mod whisper_tests {
         Ok(())
     }
 
+    /// Test for propagating a `WhisperError` as a `CustomError`.
+    ///
+    /// This test creates a new `Whisper` instance, sets the icon and message,
+    /// and calls the `whisper` method. If a `WhisperError` occurs, it is converted to a `CustomError` and propagated up the call stack.
+    /// The test will pass if no error occurs.
+    #[test]
+    fn test_whisper_map_err_and_propagate_to_custom_error() -> Result<(), CustomError> {
+        Whisper::new()
+            .icon(IconKind::NerdFontDebugging)
+            .message("test_whisper_user_api_map_err_and_propagate_to_custom_error")
+            .whisper()
+            .map_err(|err| CustomError::from(err))?;
+        Ok(())
+    }
+
+    #[derive(Debug)]
+    enum CustomError {
+        WhisperError(String),
+        // Add other kinds of errors here
+    }
+
+    impl From<WhisperError> for CustomError {
+        fn from(error: WhisperError) -> Self {
+            CustomError::WhisperError(format!("We can add more info to the error: {:?}", error))
+        }
+    }
+
+    /// Test for propagating a `WhisperError` as a `CustomError`.
+    ///
+    /// This test creates a new `Whisper` instance, sets the icon and message,
+    /// and calls the `whisper` method.
+    /// If a `WhisperError` occurs, it is converted to a `CustomError` with the original error and propagated up the call stack.
+    #[test]
+    fn test_whisper_map_err_and_propagate_to_original_error_and_custom_error(
+    ) -> Result<(), CustomError> {
+        Whisper::new()
+            .icon(IconKind::NerdFontDebugging)
+            .message("test_whisper_map_err_and_propagate_to_original_error_and_custom_error")
+            .whisper()
+            .map_err(|err| CustomError::from(err))?; // Ok or Convert from WhisperError to CustomError, pass the original error and Propagate Error
+
+        Ok(())
+    }
+
+    /// If a `WhisperError` occurs, it is converted to a `CustomError` the original error is not propagated up the call stack.
+    #[test]
+    fn test_whisper_map_err_and_convert_to_custom_error_discard_original_error(
+    ) -> Result<(), CustomError> {
+        Whisper::new()
+            .icon(IconKind::NerdFontDebugging)
+            .message("test_whisper_map_err_and_convert_to_custom_error_discard_original_error")
+            .whisper()
+            .map_err(CustomError::from)?; // Ok or Convert from WhisperError to CustomError and Propagate Error, dont pass the original
+        Ok(())
+    }
+
     #[test]
     fn test_whisper_match() {
         let whisper = Whisper::new()
@@ -321,8 +414,8 @@ mod whisper_tests {
             .message("test_whisper_match");
 
         match whisper.whisper() {
-            Ok(_) => println!("Message printed successfully"),
-            Err(error) => eprintln!("Failed to print message: {}", error),
+            Ok(()) => println!("Message printed successfully"),
+            Err(error) => eprintln!("Failed to print message: {error}",),
         }
     }
 
@@ -531,4 +624,38 @@ mod whisper_tests {
         assert!(result.is_ok());
         assert_eq!(whisper.icon_kind, Some(IconKind::NerdFontProcessing));
     }
+
+    #[test]
+    fn test_whisper_very_long_message() {
+        let long_message = "a".repeat(10000);
+        let whisper = Whisper::new()
+            .icon(IconKind::NerdFontDebugging)
+            .message(long_message.clone());
+        let result = whisper.whisper();
+        assert!(result.is_ok());
+        assert_eq!(whisper.messages, vec![long_message]);
+    }
+
+    #[test]
+    fn test_whisper_special_characters_in_message() {
+        let special_message = "!@#$%^&*()";
+        let whisper = Whisper::new()
+            .icon(IconKind::NerdFontDebugging)
+            .message(special_message);
+        let result = whisper.whisper();
+        assert!(result.is_ok());
+        assert_eq!(whisper.messages, vec![special_message]);
+    }
+
+    #[test]
+    fn test_whisper_large_number_of_messages() {
+        let messages = vec!["Test message".to_string(); 10000];
+        let whisper = Whisper::new()
+            .icon(IconKind::NerdFontDebugging)
+            .message_vec(messages.clone());
+        let result = whisper.whisper();
+        assert!(result.is_ok());
+        assert_eq!(whisper.messages, messages);
+    }
+
 }

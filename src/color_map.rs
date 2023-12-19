@@ -6,8 +6,9 @@ use std::collections::HashMap;
 type ColorFunction = Box<dyn Fn(&str) -> String>;
 type ColorMapType = HashMap<&'static str, ColorFunction>;
 
+#[derive(Default)]
 pub struct ColorMap {
-    pub(crate) map: ColorMapType,
+    pub map: ColorMapType,
 }
 
 impl ColorMap {
@@ -18,9 +19,6 @@ impl ColorMap {
         map.insert("white", Box::new(|text| text.white().to_string()));
         map.insert("cyan", Box::new(|text| text.cyan().to_string()));
         map.insert("yellow", Box::new(|text| text.yellow().to_string()));
-
-        #[cfg(feature = "tracing")]
-        tracing::info!("COLOR_MAP initialized");
 
         Self { map }
     }
