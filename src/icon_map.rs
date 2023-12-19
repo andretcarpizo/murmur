@@ -67,7 +67,7 @@ pub static ICON_MAP: Lazy<Mutex<HashMap<IconKind, (&'static str, &'static str)>>
         icon_map.insert(IconKind::NfFaInfoCircle, ("\u{f05a} ", "white")); // 
         icon_map.insert(IconKind::NfFaRefresh, ("\u{f021} ", "cyan")); // 
         icon_map.insert(IconKind::NfFaWarning, ("\u{f071} ", "yellow")); // 
-        icon_map.insert(IconKind::NfFaBug, ("\u{f188}  ", "red")); // 
+        icon_map.insert(IconKind::NfFaBug, ("\u{f188} ", "red")); // 
 
         // Unicode icons
         icon_map.insert(IconKind::UnicodeCrossMark, ("\u{274C} ", "red")); // ❌
@@ -89,8 +89,16 @@ pub static ICON_MAP: Lazy<Mutex<HashMap<IconKind, (&'static str, &'static str)>>
 #[cfg(test)]
 mod icon_map_tests {
     use super::*;
+    use crate::Whisper;
+    use color_eyre::Report;
     use enum_iterator::all;
 
+    #[test]
+    fn color_eyre_install_setup() -> Result<(), Report> {
+        color_eyre::install()?;
+        Whisper::new().message("color_eyre installed").whisper()?;
+        Ok(())
+    }
     /// Test function to print all icons associated with different kinds of messages.
     ///
     /// The function begins by calling `all::<IconKind>().collect::<Vec<_>>()`.
@@ -116,7 +124,7 @@ mod icon_map_tests {
     /// In summary, this test function is used to print all the icons in the `ICON_MAP` to the console.
     /// It's a simple way to visually check that all the icons are correctly mapped to their corresponding `IconKind` variants.
     #[test]
-    fn test_print_all_icons() {
+    fn test_print_all_icons() -> Result<(), Report> {
         all::<IconKind>()
             .collect::<Vec<_>>()
             .iter()
@@ -127,5 +135,20 @@ mod icon_map_tests {
                     ICON_MAP.lock().unwrap().get(icon_kind).unwrap().0
                 );
             });
+        Ok(())
+    }
+
+    #[test]
+    fn test_spaces_after_icons() -> Result<(), Report> {
+        for (icon_kind, (icon, _)) in ICON_MAP.lock().unwrap().iter() {
+            // Check that there is only one space after the icon
+            assert!(
+                icon.ends_with(" ") && !icon.ends_with("  "),
+                "Invalid spacing after {} icon: '{}'",
+                icon_kind,
+                icon
+            );
+        }
+        Ok(())
     }
 }

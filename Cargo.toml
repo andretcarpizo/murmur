@@ -10,12 +10,15 @@ keywords = ["terminal", "color", "formatting", "icons","nerdfonts"]
 categories = ["command-line-utilities"]
 
 [dependencies]
+color-backtrace = "0.6.1"
 enum-iterator = "1.4.1"
 once_cell = "1.19.0"
 owo-colors = "3.5.0"
 thiserror = "1.0.51"
 
 [dev-dependencies]
+color-eyre = "0.6.2"
+color-backtrace = "0.6.1"
 
 
 [features]

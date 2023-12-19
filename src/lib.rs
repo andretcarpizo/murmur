@@ -240,7 +240,6 @@
 //!  }
 //! ```
 
-
 mod icon_map;
 pub use icon_map::IconKind;
 
@@ -294,7 +293,6 @@ pub struct Whisper {
     icon_kind: Option<IconKind>,
     /// A vector of messages to be displayed.
     messages: Vec<String>,
-    
 }
 
 impl Whisper {
@@ -456,9 +454,7 @@ impl Whisper {
     /// ```
     pub fn whisper(&self) -> Result<(), WhisperError> {
         // Try to lock the ICON_MAP for safe access in a concurrent environment
-        let icon_map = icon_map::ICON_MAP
-            .lock()
-            .map_err(|_| WhisperError::Lock)?;
+        let icon_map = icon_map::ICON_MAP.lock().map_err(|_| WhisperError::Lock)?;
 
         // Check the icon_kind field of the Whisper instance
         let (icon, color) = self.icon_kind.clone().map_or(("", ""), |icon_kind| {
@@ -506,8 +502,7 @@ impl Whisper {
 
         for (index, message) in messages.iter().enumerate() {
             let prefix = if index == 0 { icon } else { "  " };
-            Self::print_message(color, prefix, message)
-                .map_err(|_| WhisperError::Print)?;
+            Self::print_message(color, prefix, message).map_err(|_| WhisperError::Print)?;
         }
         Ok(())
     }
@@ -536,11 +531,7 @@ impl Whisper {
     /// This function will return `WhisperError::Lock` if it fails to acquire a lock on the `Mutex`.
     /// It will return `WhisperError::Write` if there is an error while writing to the buffer.
     /// It will return `WhisperError::Flush` if there is an error while flushing the buffer.
-    fn print_message(
-        color: &str,
-        prefix: &str,
-        message: &str,
-    ) -> Result<(), WhisperError> {
+    fn print_message(color: &str, prefix: &str, message: &str) -> Result<(), WhisperError> {
         /// The buffer size for stdout, 8192 bytes.
         const BUFFER_SIZE: usize = 8192;
         let stdout = io::stdout();
@@ -557,7 +548,40 @@ impl Whisper {
         writer.flush().map_err(|_| WhisperError::Flush)?;
         Ok(())
     }
+}
 
+#[cfg(test)]
+mod whisper_color_override_tests {
+    use super::*;
+    use owo_colors::OwoColorize;
+
+    #[test]
+    fn test_whisper_color_print() {
+        Whisper::new()
+            .message("test color".yellow())
+            .whisper()
+            .unwrap();
+    }
+
+    #[test]
+    fn test_whisper_with_icon_and_color() {
+        Whisper::new()
+            .icon(IconKind::NfFaCheck)
+            .message("each icon provides a default color but you can override it")
+            .whisper()
+            .unwrap();
+    }
+
+    #[test]
+    fn test_add_custom_color() {
+        Whisper::new()
+            .icon(IconKind::NfFaBug)
+            .message("test color".magenta())
+            .message("owo_colors crate has a lot of colors".cyan())
+            .message("you can add your own colors".red())
+            .whisper()
+            .unwrap();
+    }
 }
 
 #[cfg(test)]
@@ -801,13 +825,12 @@ mod whisper_functionality_tests {
         assert!(result.is_ok());
         assert_eq!(whisper.messages, messages);
     }
-
 }
 
 #[cfg(test)]
-mod whisper_error_handling_tests{
-    use std::io::{Error, ErrorKind};
+mod whisper_error_handling_tests {
     use crate::{IconKind, Whisper, WhisperError};
+    use std::io::{Error, ErrorKind};
 
     /// Test for propagating a `WhisperError`.
     ///
@@ -911,7 +934,7 @@ mod whisper_error_handling_tests{
     /// and calls the `whisper` method. If a `WhisperError` occurs, it is discarded and the result is converted to an `Option`.
     /// The test will pass if no error occurs.
     #[test]
-    fn test_whisper_ok_discard_error_if_any () {
+    fn test_whisper_ok_discard_error_if_any() {
         Whisper::new()
             .icon(IconKind::NfFaBug)
             .message("test_whisper_ok_discard_error_if_any")
@@ -925,7 +948,7 @@ mod whisper_error_handling_tests{
     /// and calls the `whisper` method. If a `WhisperError` occurs, it is handled by the `or_else` method which returns the error.
     /// The test will pass if no error occurs.
     #[test]
-    fn test_whisper_or_else () -> Result<(), WhisperError> {
+    fn test_whisper_or_else() -> Result<(), WhisperError> {
         Whisper::new()
             .icon(IconKind::NfFaBug)
             .message("test_whisper_or_else")
