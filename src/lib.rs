@@ -366,6 +366,29 @@ mod whisper_tests {
         Ok(())
     }
 
+    #[test]
+    fn test_whisper_ok_discard_error_if_any () {
+        Whisper::new()
+            .icon(IconKind::NerdFontDebugging)
+            .message("test_whisper_ok_discard_error_if_any")
+            .whisper()
+            .ok(); //Converts from Result<T, E> to Option<T>. Converts self into an Option<T>, consuming self, and discarding the error, if any
+    }
+
+
+    #[test]
+    fn test_whisper_or_else () -> Result<(), WhisperError> {
+        Whisper::new()
+            .icon(IconKind::NerdFontDebugging)
+            .message("test_whisper_or_else")
+            .whisper()
+            .or_else(|err| Err(err)) //Converts from Result<T, E> to Option<T>. Converts self into an Option<T>, consuming self, and discarding the error, if any
+    }
+
+
+
+
+
     #[derive(Debug)]
     enum CustomError {
         WhisperError(String),
