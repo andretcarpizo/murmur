@@ -4,10 +4,10 @@
 //! The `COLOR_MAP` is used to apply color to text based on the color name.
 //! The `COLOR_MAP` is lazily initialized and contains mappings for the colors "red", "green", "white", "cyan", and "yellow".
 //!
-use std::sync::{Arc, Mutex};
+use once_cell::sync::Lazy;
 use owo_colors::OwoColorize;
 use std::collections::HashMap;
-use once_cell::sync::Lazy;
+use std::sync::{Arc, Mutex};
 
 /// `ColorFunction` is a type alias for a thread-safe function pointer that takes a string slice and returns a colored string.
 /// The function is wrapped in an `Arc<Mutex<_>>` to allow it to be shared and mutated across threads.
@@ -20,11 +20,26 @@ type ColorMapType = HashMap<&'static str, ColorFunction>;
 /// A static `COLOR_MAP` that maps color names to color functions.
 pub static COLOR_MAP: Lazy<ColorMapType> = Lazy::new(|| {
     let mut map: ColorMapType = HashMap::new();
-    map.insert("red", Arc::new(Mutex::new(|text: &str | text.red().to_string())));
-    map.insert("green", Arc::new(Mutex::new(|text:&str| text.green().to_string())));
-    map.insert("white", Arc::new(Mutex::new(|text:&str| text.white().to_string())));
-    map.insert("cyan", Arc::new(Mutex::new(|text:&str| text.cyan().to_string())));
-    map.insert("yellow", Arc::new(Mutex::new(|text:&str| text.yellow().to_string())));
+    map.insert(
+        "red",
+        Arc::new(Mutex::new(|text: &str| text.red().to_string())),
+    );
+    map.insert(
+        "green",
+        Arc::new(Mutex::new(|text: &str| text.green().to_string())),
+    );
+    map.insert(
+        "white",
+        Arc::new(Mutex::new(|text: &str| text.white().to_string())),
+    );
+    map.insert(
+        "cyan",
+        Arc::new(Mutex::new(|text: &str| text.cyan().to_string())),
+    );
+    map.insert(
+        "yellow",
+        Arc::new(Mutex::new(|text: &str| text.yellow().to_string())),
+    );
 
     map
 });

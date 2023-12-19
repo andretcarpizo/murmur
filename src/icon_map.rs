@@ -72,9 +72,15 @@ pub static ICON_MAP: Lazy<Mutex<HashMap<IconKind, (&'static str, &'static str)>>
         // Unicode icons
         icon_map.insert(IconKind::UnicodeCrossMark, ("\u{274C} ", "red")); // ❌
         icon_map.insert(IconKind::UnicodeCheckMark, ("\u{2714}\u{FE0F} ", "green")); // ✔️
-        icon_map.insert(IconKind::UnicodeInformationSource, ("\u{2139}\u{FE0F} ", "white")); // ℹ️
+        icon_map.insert(
+            IconKind::UnicodeInformationSource,
+            ("\u{2139}\u{FE0F} ", "white"),
+        ); // ℹ️
         icon_map.insert(IconKind::UnicodeGear, ("\u{2699}\u{FE0F} ", "cyan")); // ⚙️
-        icon_map.insert(IconKind::UnicodeWarningSign, ("\u{26A0}\u{FE0F} ", "yellow")); // ⚠️
+        icon_map.insert(
+            IconKind::UnicodeWarningSign,
+            ("\u{26A0}\u{FE0F} ", "yellow"),
+        ); // ⚠️
         icon_map.insert(IconKind::UnicodeBug, ("\u{1F41B} ", "red")); // 🐛
 
         Mutex::new(icon_map)
