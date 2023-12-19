@@ -19,7 +19,6 @@ pub use icon_map::IconKind;
 
 mod color_map;
 
-use color_map::ColorMap;
 use core::fmt::{Debug, Display};
 use std::io::{self, BufWriter, Write};
 use thiserror::Error;
@@ -208,7 +207,6 @@ impl Whisper {
     ///
     /// This function will return `Err(MurmurError::PrintError)` if there is an error while printing the messages.
     fn print_messages(&self, icon: &str, color: &str) -> Result<(), WhisperError> {
-        let color_map = ColorMap::new();
         let messages = if self.messages.is_empty() {
             vec![String::new()]
         } else {
@@ -217,7 +215,7 @@ impl Whisper {
 
         for (index, message) in messages.iter().enumerate() {
             let prefix = if index == 0 { icon } else { "  " };
-            Self::print_message(&color_map, color, prefix, message)
+            Self::print_message(color, prefix, message)
                 .map_err(|_| WhisperError::PrintError)?;
         }
         Ok(())
@@ -253,7 +251,6 @@ impl Whisper {
     /// This function will return `Err(WhisperError::WriteError)` if there is an error while writing to the `BufWriter`.
     /// It will return `Err(WhisperError::FlushError)` if there is an error while flushing the `BufWriter`.
     pub fn print_message(
-        color_map: &ColorMap,
         color: &str,
         prefix: &str,
         message: &str,
@@ -263,7 +260,7 @@ impl Whisper {
         let stdout = io::stdout();
         let mut writer = BufWriter::with_capacity(BUFFER_SIZE, stdout.lock());
 
-        if let Some(color_fn) = color_map.map.get(color) {
+        if let Some(color_fn) = color_map::COLOR_MAP.get(color) {
             writeln!(writer, "{}{}", color_fn(prefix), color_fn(message))
                 .map_err(|_| WhisperError::WriteError)?;
         } else {
@@ -366,28 +363,33 @@ mod whisper_tests {
         Ok(())
     }
 
+    /// Test for discarding a `WhisperError` if any occurs.
+    ///
+    /// This test creates a new `Whisper` instance, sets the icon and message,
+    /// and calls the `whisper` method. If a `WhisperError` occurs, it is discarded and the result is converted to an `Option`.
+    /// The test will pass if no error occurs.
     #[test]
     fn test_whisper_ok_discard_error_if_any () {
         Whisper::new()
             .icon(IconKind::NerdFontDebugging)
             .message("test_whisper_ok_discard_error_if_any")
             .whisper()
-            .ok(); //Converts from Result<T, E> to Option<T>. Converts self into an Option<T>, consuming self, and discarding the error, if any
+            .ok();
     }
 
-
+    /// Test for handling a `WhisperError` using `or_else`.
+    ///
+    /// This test creates a new `Whisper` instance, sets the icon and message,
+    /// and calls the `whisper` method. If a `WhisperError` occurs, it is handled by the `or_else` method which returns the error.
+    /// The test will pass if no error occurs.
     #[test]
     fn test_whisper_or_else () -> Result<(), WhisperError> {
         Whisper::new()
             .icon(IconKind::NerdFontDebugging)
             .message("test_whisper_or_else")
             .whisper()
-            .or_else(|err| Err(err)) //Converts from Result<T, E> to Option<T>. Converts self into an Option<T>, consuming self, and discarding the error, if any
+            .or_else(|err| Err(err))
     }
-
-
-
-
 
     #[derive(Debug)]
     enum CustomError {
@@ -681,4 +683,34 @@ mod whisper_tests {
         assert_eq!(whisper.messages, messages);
     }
 
+}
+
+
+#[cfg(test)]
+mod whisper_error_tests {
+    use super::*;
+
+    #[test]
+    fn whisper_error_lock_error() {
+        let error = WhisperError::LockError;
+        assert_eq!(format!("{}", error), "Failed to acquire lock on ICON_MAP");
+    }
+
+    #[test]
+    fn whisper_error_print_error() {
+        let error = WhisperError::PrintError;
+        assert_eq!(format!("{}", error), "Failed to print message");
+    }
+
+    #[test]
+    fn whisper_error_write_error() {
+        let error = WhisperError::WriteError;
+        assert_eq!(format!("{}", error), "Error writing to buffer");
+    }
+
+    #[test]
+    fn whisper_error_flush_error() {
+        let error = WhisperError::FlushError;
+        assert_eq!(format!("{}", error), "Error flushing buffer");
+    }
 }
