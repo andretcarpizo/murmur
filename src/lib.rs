@@ -294,6 +294,7 @@ pub struct Whisper {
     icon_kind: Option<IconKind>,
     /// A vector of messages to be displayed.
     messages: Vec<String>,
+    
 }
 
 impl Whisper {
