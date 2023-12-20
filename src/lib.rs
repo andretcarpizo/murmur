@@ -4,28 +4,12 @@
 //! [![Documentation](https://docs.rs/murmur/badge.svg)](https://docs.rs/murmur)
 //! Table of Contents
 //! 1. [Usage](#usage)
-//! - [IconKind Variants](#iconkind-variants)
-//! 2. [Examples](#examples)
-//! - [Creating a `Whisper` Instance](#creating-a-whisper-instance)
-//! - [Chain of Messages Without an Icon](#chain-of-messages-without-an-icon)
-//! - [Adding a Vector of Messages](#adding-a-vector-of-messages)
-//! 3. [Whisper Methods](#whisper-methods)
+//! 2. [`IconKind` Variants](#iconkind-variants)
+//! 3. [`Whisper` Methods](#whisper-methods)
 //! 4. [Handling Errors with Default Methods](#handling-errors-with-default-methods)
-//! - [whisper](#whisper)
-//! - [whisper_new](#whisper_new)
-//! - [whisper_unwrap](#whisper_unwrap)
-//! - [whisper_unwrap_or_else](#whisper_unwrap_or_else)
-//! - [whisper_expect](#whisper_expect)
-//! - [whisper_map_err](#whisper_map_err)
-//! - [whisper_ok](#whisper_ok)
-//! - [box_dyn_error](#box_dyn_error)
-//! - [whisper_match](#whisper_match)
-//! - [whisper_if_let](#whisper_if_let)
 //! 5. [Customizing Error Handling](#customizing-error-handling)
-//! - [Explicit Closure for Error Conversion](#explicit-closure-for-error-conversion)
-//! - [Function Reference for Error Conversion](#function-reference-for-error-conversion)
 //! 6. [Integrating thiserror](#integrating-thiserror)
-//! - [thiserror Error Conversion](#thiserror-error-conversion)
+//!
 //! This library provides a simple and flexible way to format colored stdout messages with optional `NerdFonts` or `Unicode` icons.
 //!
 //! ```toml
@@ -53,8 +37,6 @@
 //!  ...
 //!
 //!  For a full list of the currently supported icons, see the `IconKind` enum.
-//!
-//! # Examples
 //! ```rust
 //! use murmur::{Whisper, IconKind};
 //! use owo_colors::OwoColorize;
@@ -79,8 +61,6 @@
 //! - `.message()`: Adds a message to the `Whisper` instance
 //! - `.message_vec()`: Add a vector of messages to the `Whisper` instance
 //! - `.whisper()`: Builds the `Whisper` instance and prints the messages
-//!
-//! ## Examples
 //!
 //! Here are some examples of how to use the `Whisper` struct.
 //!
