@@ -1,0 +1,64 @@
+#`cargo make release`
+[env]
+VERSION = "0.3.0"
+
+[tasks.format]
+install_crate = "rustfmt"
+command = "cargo"
+args = ["fmt"]
+
+[tasks.set-version]
+install_crate = "cargo-edit"
+command = "cargo"
+args = ["set-version", "${VERSION}"]
+
+[tasks.clean-release]
+command = "cargo"
+args = ["clean", "--release"]
+
+[tasks.build-release]
+command = "cargo"
+args = ["build", "--release"]
+
+[tasks.git-add]
+command = "git"
+args = ["add", "--all"]
+
+[tasks.git-commit]
+command = "git"
+args = ["commit", "-m", "release v${VERSION}"]
+
+[tasks.git-tag]
+command = "git"
+args = ["tag", "v${VERSION}"]
+
+[tasks.git-push]
+command = "git"
+args = ["push"]
+
+[tasks.git-push-tag]
+command = "git"
+args = ["push", "origin", "v${VERSION}"]
+
+[tasks.gh-release]
+command = "gh"
+args = ["release", "create", "v${VERSION}", "-F", "changelog.md"]
+
+[tasks.cargo-publish]
+command = "cargo"
+args = ["publish"]
+
+[tasks.release]
+dependencies = [
+    "format",
+    "set-version",
+    "clean-release",
+    "build-release",
+    "git-add",
+    "git-commit",
+    "git-tag",
+    "git-push",
+    "git-push-tag",
+    "gh-release",
+    "cargo-publish"
+]

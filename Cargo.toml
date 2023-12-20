@@ -1,10 +1,11 @@
 [package]
 name = "murmur"
-version = "0.2.1"
+version = "0.3.0"
 edition = "2021"
 license = "MIT"
 description = "This library provides a simple and flexible way to format colored messages with optional `NerdFonts` or `Unicode` icons."
 repository = "https://github.com/andretcarpizo/murmur"
+documentation = "https://docs.rs/murmur"
 readme = "README.md"
 keywords = ["terminal", "color", "formatting", "icons","nerdfonts"]
 categories = ["command-line-utilities"]
