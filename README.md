@@ -122,7 +122,7 @@ This library provides a simple and flexible way to format colored stdout message
 
  ## Handling Errors with Default Methods
 
- The `whisper` function returns  `-> Result<(), WhisperError>`
+ The `whisper` method returns  `-> Result<(), WhisperError>`
 
  ```rust
  use murmur::{Whisper, IconKind, WhisperError};
@@ -131,7 +131,7 @@ This library provides a simple and flexible way to format colored stdout message
  fn whisper_new() -> Result<(), WhisperError> {
      let whisper = Whisper::new()
          .icon(IconKind::NfFaBug)
-         .message("creating a `Whisper` instance.")
+         .message("The `whisper` method returns  `-> Result<(), WhisperError>`"
          .whisper()?;
      Ok(())
  }
