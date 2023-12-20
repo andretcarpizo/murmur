@@ -21,7 +21,6 @@ use std::{collections::HashMap, sync::Mutex};
 ///     .message("This is a message with a Nerd Font icon.")
 ///     .whisper()
 ///     .unwrap();
-///
 /// ```
 ///
 /// You must have [NerdFonts](https://www.nerdfonts.com/) installed to use the `Nf` variants.
@@ -125,7 +124,7 @@ mod icon_map_tests {
     /// In summary, this test function is used to print all the icons in the `ICON_MAP` to the console.
     /// It's a simple way to visually check that all the icons are correctly mapped to their corresponding `IconKind` variants.
     #[test]
-    fn test_print_all_icons() -> Result<(), Report> {
+    fn test_print_all_icons() {
         all::<IconKind>()
             .collect::<Vec<_>>()
             .iter()
@@ -136,20 +135,30 @@ mod icon_map_tests {
                     ICON_MAP.lock().unwrap().get(icon_kind).unwrap().0
                 );
             });
-        Ok(())
     }
 
+    /// This test function checks the spacing after each icon in the `ICON_MAP`.
+    ///
+    /// It iterates over each `IconKind` and its associated icon in the `ICON_MAP`.
+    /// For each icon, it asserts that the icon ends with exactly one space.
+    /// If an icon ends with no space or more than one space, the assertion fails and the test function panics.
+    ///
+    /// # Panics
+    ///
+    /// This function will panic if any icon in the `ICON_MAP` does not end with exactly one space.
     #[test]
-    fn test_spaces_after_icons() -> Result<(), Report> {
-        for (icon_kind, (icon, _)) in ICON_MAP.lock().unwrap().iter() {
+    fn test_spaces_after_icons() {
+        let icon_map = {
+            let guard = ICON_MAP.lock().unwrap();
+            guard.clone()
+        };
+
+        for (icon_kind, (icon, _)) in &icon_map {
             // Check that there is only one space after the icon
             assert!(
-                icon.ends_with(" ") && !icon.ends_with("  "),
-                "Invalid spacing after {} icon: '{}'",
-                icon_kind,
-                icon
+                icon.ends_with(' ') && !icon.ends_with("  "),
+                "Invalid spacing after {icon_kind} icon: '{icon}'",
             );
         }
-        Ok(())
     }
 }

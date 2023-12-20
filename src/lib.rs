@@ -55,6 +55,8 @@
 //!     .message("message".red())
 //!     .whisper()
 //!     .unwrap();
+//!
+//!
 //! ```
 //!
 //! <div class="warning">You must have NerdFonts installed to use the `Nf` variants.</div>
