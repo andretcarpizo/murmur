@@ -140,7 +140,8 @@
 //!     Whisper::new()
 //!         .icon(IconKind::NfFaInfoCircle)
 //!         .message("unwrap")
-//!         .message("Returns the contained Ok value, consuming the self value,function may panic, its use is generally discouraged")
+//!         .message("Returns the contained Ok value, consuming the self value,\
+//!          function may panic, its use is generally discouraged")
 //!         .whisper()
 //!         .unwrap();
 //! }
@@ -172,8 +173,10 @@
 //!     Whisper::new()
 //!         .icon(IconKind::NfFaTimes)
 //!         .message("map_err")
-//!         .message("Maps a Result<T, E> to Result<T, F> by applying a function to a contained Err value, leaving an Ok value untouched.")
-//!         .message("This function can be used to pass through a successful result while handling an error.")
+//!         .message("Maps a Result<T, E> to Result<T, F> \
+//!          by applying a function to a contained Err value, leaving an Ok value untouched.")
+//!         .message("This function can be used to pass through a \
+//!          successful result while handling an error.")
 //!         .whisper()
 //!         .map_err(|err| Error::new(ErrorKind::Other, err))?;
 //!     Ok(())
@@ -194,7 +197,8 @@
 //!    Whisper::new()
 //!        .icon(IconKind::NfFaTimes)
 //!       .message("box_dyn_error")
-//!       .message("This function returns a Result. If the operation is successful, it returns Ok(()).")
+//!       .message("This function returns a Result. If the operation is successful,\
+//!        it returns Ok(()).")
 //!       .message("If there is an error during the operation, it returns WhisperError.")
 //!       .whisper()?;
 //!    Ok(())
@@ -240,7 +244,7 @@
 //! fn explicit_closure_for_error_conversion() -> Result<(), CustomError> {
 //!     Whisper::new()
 //!         .icon(IconKind::NfFaTimes)
-//!         .message("Using an explicit closure to convert a `WhisperError` into a `CustomError`.")
+//!         .message("Explicit closure to convert a `WhisperError` into a `CustomError`.")
 //!         .whisper()
 //!         .map_err(|err| CustomError::from(err))?;
 //!     Ok(())
@@ -249,7 +253,7 @@
 //! fn function_reference_for_error_conversion() -> Result<(), CustomError> {
 //!     Whisper::new()
 //!         .icon(IconKind::NfFaTimes)
-//!         .message("Using a function reference to convert a `WhisperError` into a `CustomError`.")
+//!         .message("Function reference to convert a `WhisperError` into a `CustomError`.")
 //!         .whisper()
 //!         .map_err(CustomError::from)?;
 //!     Ok(())
