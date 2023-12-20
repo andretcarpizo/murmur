@@ -57,7 +57,8 @@
 //!     .unwrap();
 //! ```
 //!
-//! You must have [NerdFonts](https://www.nerdfonts.com/) installed to use the `Nf` variants.
+//! <div class="warning">You must have NerdFonts installed to use the `Nf` variants.</div>
+//!
 //! - [Nerfonts github](https://github.com/ryanoasis/nerd-fonts?tab=readme-ov-files)
 //! - [NerdFonts cheat-sheet](https://www.nerdfonts.com/cheat-sheet)
 //!
