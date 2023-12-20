@@ -1,6 +1,7 @@
-#`cargo make release`
+#`cargo make release` to release the current version
+#`cargo make release version=0.4.0` to override the version
 [env]
-VERSION = "0.3.0"
+VERSION = "0.3.1"
 
 [tasks.format]
 install_crate = "rustfmt"
@@ -26,7 +27,7 @@ args = ["add", "--all"]
 
 [tasks.git-commit]
 command = "git"
-args = ["commit", "-m", "release v${VERSION}"]
+args = ["commit", "-m", "v${VERSION}"]
 
 [tasks.git-tag]
 command = "git"
