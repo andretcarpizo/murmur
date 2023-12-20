@@ -1,6 +1,6 @@
 #`cargo make release` to release the current version
 [env]
-VERSION = "0.3.3"
+VERSION = "0.3.4"
 
 [tasks.format]
 install_crate = "rustfmt"
