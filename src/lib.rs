@@ -1,20 +1,16 @@
 //! # murmur
-//!
-//! This Rust crate provides a simple and flexible way to format colored stdout messages with optional `NerdFonts` or `Unicode` icons.
-//!
+//! [![github](https://img.shields.io/badge/github-andretcarpizo/murmur-blue.svg)](https://github.com/andretcarpizo/murmur)
 //! [![Crates.io](https://img.shields.io/crates/v/murmur.svg)](https://crates.io/crates/murmur)
 //! [![Documentation](https://docs.rs/murmur/badge.svg)](https://docs.rs/murmur)
-//! [![GitHub](https://img.shields.io/github/stars/andretcarpizo/murmur.svg?style=social)](https://github.com/andretcarpizo/murmur)
 //!
-//! ## Usage
-//!
-//! Add this to your `Cargo.toml`:
+//! This library provides a simple and flexible way to format colored stdout messages with optional `NerdFonts` or `Unicode` icons.
 //!
 //! ```toml
 //! [dependencies]
 //! murmur = "0.1.0"
 //! ```
 //!
+//! ## Usage
 //! This crate provides a `Whisper` struct and an `IconKind` enum.
 //!
 //! ```rust
@@ -65,7 +61,7 @@
 //!
 //! Here are some examples of how to use the `Whisper` struct.
 //!
-//! ### Creating a new `Whisper` instance adding an icon and a message
+//! ### Creating a new `Whisper` instance, adding an icon and a message
 //!
 //! ```rust
 //! use murmur::{Whisper, IconKind};
@@ -125,7 +121,7 @@
 //! use murmur::{Whisper, IconKind, WhisperError};
 //! use std::io::{Error, ErrorKind};
 //!
-//! fn create_whisper() -> Result<(), WhisperError> {
+//! fn whisper_new() -> Result<(), WhisperError> {
 //!     let whisper = Whisper::new()
 //!         .icon(IconKind::NfFaBug)
 //!         .message("creating a `Whisper` instance.")
@@ -133,71 +129,90 @@
 //!     Ok(())
 //! }
 //!
-//! fn convert_whisper_error_to_io_error() -> Result<(), Error> {
-//!     let whisper = Whisper::new()
-//!         .icon(IconKind::UnicodeCheckMark)
-//!         .message("Converting a `WhisperError` into an `io::Error`.")
-//!         .whisper()
-//!         .map_err(|err| Error::new(ErrorKind::Other, err))?;
-//!     Ok(())
-//! }
 //!
-//!
-//! fn unwrap() {
+//! fn whisper_unwrap() {
 //!     Whisper::new()
 //!         .icon(IconKind::NfFaInfoCircle)
-//!         .message("Unwrapping a `Whisper` instance.")
+//!         .message("unwrap")
+//!         .message("Returns the contained Ok value, consuming the self value,function may panic, its use is generally discouraged")
 //!         .whisper()
 //!         .unwrap();
 //! }
 //!
-//! fn unwrap_or_else() {
+//! fn whisper_unwrap_or_else() {
 //!     Whisper::new()
 //!         .icon(IconKind::NfFaBug)
+//!         .message("unwrap_or_else")
 //!         .message("Unwrapping a `Whisper` instance or panicking with a custom message.")
 //!         .whisper()
 //!         .unwrap_or_else(|err| panic!("Failed to print message: {}", err));
 //! }
 //!
-//! fn expect() {
+//! fn whisper_expect() {
 //!     Whisper::new()
 //!         .icon(IconKind::NfFaWarning)
-//!         .message("Expecting a `Whisper` instance to be `Ok`.")
+//!         .message("expect")
+//!         .message(
+//!             "Returns the contained Ok value, consuming the self value.\
+//!              Because this function may panic, its use is generally discouraged.\
+//!              Instead, prefer to use pattern matching and handle the Err case explicitly,\
+//!              or call unwrap_or, unwrap_or_else, or unwrap_or_default.",
+//!         )
 //!         .whisper()
 //!         .expect("Failed to print message");
 //! }
 //!
-//! fn map_err_and_propagate_io_error() -> Result<(), Error> {
+//! fn whisper_map_err() -> Result<(), Error> {
 //!     Whisper::new()
 //!         .icon(IconKind::NfFaTimes)
-//!         .message("Propagating a `WhisperError` as an `io::Error`.")
+//!         .message("map_err")
+//!         .message("Maps a Result<T, E> to Result<T, F> by applying a function to a contained Err value, leaving an Ok value untouched.")
+//!         .message("This function can be used to pass through a successful result while handling an error.")
 //!         .whisper()
 //!         .map_err(|err| Error::new(ErrorKind::Other, err))?;
 //!     Ok(())
 //! }
 //!
-//! fn ok_discard_error_if_any() {
+//! fn whisper_ok() {
 //!     Whisper::new()
 //!         .icon(IconKind::NfFaTimes)
-//!         .message("// Discarding a `WhisperError` if any occurs.")
+//!         .message("ok")
+//!         .message("Converts from Result<T, E> to Option<T>.")
+//!         .message("consuming self, and discarding the error, if any.")
 //!         .whisper()
 //!         .ok();
 //! }
 //!
-//! fn or_else() -> Result<(), WhisperError> {
-//!     Whisper::new()
-//!         .icon(IconKind::NfFaTimes)
-//!         .message("Handling a `WhisperError` using `or_else`.")
-//!         .whisper()
-//!         .or_else(|err| Err(err))
-//! }
 //!
 //! fn box_dyn_error() -> Result<(), Box<dyn std::error::Error>> {
 //!    Whisper::new()
 //!        .icon(IconKind::NfFaTimes)
-//!       .message("using box dyn error")
+//!       .message("box_dyn_error")
+//!       .message("This function returns a Result. If the operation is successful, it returns Ok(()).")
+//!       .message("If there is an error during the operation, it returns WhisperError.")
 //!       .whisper()?;
 //!    Ok(())
+//! }
+//! fn whisper_match() {
+//!     let whisper = Whisper::new()
+//!         .icon(IconKind::NfFaBug)
+//!         .message("match");
+//!
+//!     match whisper.whisper() {
+//!         Ok(()) => println!("Message printed successfully"),
+//!         Err(error) => eprintln!("Failed to print message: {error}",),
+//!     }
+//! }
+//!
+//! fn whisper_if_let() {
+//!     let whisper = Whisper::new()
+//!         .icon(IconKind::NfFaBug)
+//!         .message("if_let")
+//!         .message("test_whisper_if_let");
+//!
+//!     if let Err(error) = whisper.whisper() {
+//!         eprintln!("Failed to print message: {error}",);
+//!     }
 //! }
 //! ```
 //! ## Custom Error Handling Examples
@@ -212,7 +227,7 @@
 //!
 //! impl From<WhisperError> for CustomError {
 //!     fn from(error: WhisperError) -> Self {
-//!         CustomError::WhisperError(format!("We can add more info to the error: {:?}", error))
+//!         Self::WhisperError(format!("We can add more info to the error: {error}"))
 //!     }
 //! }
 //!
@@ -248,7 +263,7 @@
 //!   OtherError(),
 //! }
 //!
-//! fn thiserror_error_conversion_example() -> Result<(), CustomError> {
+//! fn thiserror_error_conversion() -> Result<(), CustomError> {
 //!    Whisper::new()
 //!      .icon(IconKind::NfFaTimes)
 //!      .message("Using thiserror")
@@ -843,233 +858,30 @@ mod whisper_functionality_tests {
 }
 
 #[cfg(test)]
-mod whisper_error_handling_tests {
-    use crate::{IconKind, Whisper, WhisperError};
-    use std::io::{Error, ErrorKind};
-
-    /// Test for propagating a `WhisperError`.
-    ///
-    /// This test creates a new `Whisper` instance, sets the icon and message,
-    /// and calls the `whisper` method.
-    /// If an error occurs, it is propagated up the call stack, the error is not converted. from its original type.
-    #[test]
-    fn test_whisper_propagate_to_murmur_error() -> Result<(), WhisperError> {
-        Whisper::new()
-            .icon(IconKind::NfFaBug)
-            .message("test_whisper_propagate_to_murmur_error")
-            .whisper()?;
-        Ok(())
-    }
-
-    /// Test for unwrapping a `Whisper` instance.
-    ///
-    /// This test creates a new `Whisper` instance, sets the icon and message,
-    /// and calls the `whisper` method.
-    /// If an error occurs, the test will panic.
-    #[test]
-    fn test_whisper_unwrap() {
-        Whisper::new()
-            .icon(IconKind::NfFaBug)
-            .message("test_whisper_unwrap")
-            .whisper()
-            .unwrap();
-    }
-
-    /// Test for unwrapping a `Whisper` instance or panicking with a custom message.
-    ///
-    /// This test creates a new `Whisper` instance, sets the icon and message,
-    /// and calls the `whisper` method.
-    /// If an error occurs, the test will panic with a custom message.
-    #[test]
-    fn test_whisper_unwrap_or_else() {
-        Whisper::new()
-            .icon(IconKind::NfFaBug)
-            .message("test_whisper_unwrap_or_else")
-            .whisper()
-            .unwrap_or_else(|err| panic!("Failed to print message: {err}"));
-    }
-
-    #[test]
-    fn test_whisper_unwrap_eprintln() {
-        Whisper::new()
-            .icon(IconKind::NfFaBug)
-            .message("test_whisper_eprintln")
-            .whisper()
-            .unwrap_or_else(|err| eprintln!("Failed to print message: {err}"));
-    }
-
-    /// Test for expecting a `Whisper` instance to be `Ok`.
-    ///
-    /// This test creates a new `Whisper` instance, sets the icon and message,
-    /// and calls the `whisper` method.
-    /// If an error occurs, the test will panic with a custom message.
-    #[test]
-    fn test_whisper_expect() {
-        Whisper::new()
-            .icon(IconKind::NfFaBug)
-            .message("test_whisper_unwrap")
-            .whisper()
-            .expect("Failed to print message");
-    }
-
-    /// Test for propagating a `WhisperError` as an `io::Error`.
-    ///
-    /// This test creates a new `Whisper` instance, sets the icon and message,
-    /// and calls the `whisper` method.
-    /// If a `WhisperError` occurs, it is converted to an `io::Error` and propagated up the call stack.
-    /// The test will pass if no error occurs.
-    #[test]
-    fn test_whisper_map_err_and_propagate_io_error() -> Result<(), Error> {
-        Whisper::new()
-            .icon(IconKind::NfFaBug)
-            .message("test_whisper_user_api_map_err_and_propagate_io_error")
-            .whisper()
-            .map_err(|err| Error::new(ErrorKind::Other, err))?;
-        Ok(())
-    }
-
-    /// Test for propagating a `WhisperError` as a `CustomError`.
-    ///
-    /// This test creates a new `Whisper` instance, sets the icon and message,
-    /// and calls the `whisper` method. If a `WhisperError` occurs, it is converted to a `CustomError` and propagated up the call stack.
-    /// The test will pass if no error occurs.
-    #[test]
-    fn test_whisper_map_err_and_propagate_to_custom_error() -> Result<(), CustomError> {
-        Whisper::new()
-            .icon(IconKind::NfFaBug)
-            .message("test_whisper_user_api_map_err_and_propagate_to_custom_error")
-            .whisper()
-            .map_err(|err| CustomError::from(err))?;
-        Ok(())
-    }
-
-    /// Test for discarding a `WhisperError` if any occurs.
-    ///
-    /// This test creates a new `Whisper` instance, sets the icon and message,
-    /// and calls the `whisper` method. If a `WhisperError` occurs, it is discarded and the result is converted to an `Option`.
-    /// The test will pass if no error occurs.
-    #[test]
-    fn test_whisper_ok_discard_error_if_any() {
-        Whisper::new()
-            .icon(IconKind::NfFaBug)
-            .message("test_whisper_ok_discard_error_if_any")
-            .whisper()
-            .ok();
-    }
-
-    /// Test for handling a `WhisperError` using `or_else`.
-    ///
-    /// This test creates a new `Whisper` instance, sets the icon and message,
-    /// and calls the `whisper` method. If a `WhisperError` occurs, it is handled by the `or_else` method which returns the error.
-    /// The test will pass if no error occurs.
-    #[test]
-    fn test_whisper_or_else() -> Result<(), WhisperError> {
-        Whisper::new()
-            .icon(IconKind::NfFaBug)
-            .message("test_whisper_or_else")
-            .whisper()
-            .or_else(|err| Err(err))
-    }
-
-    #[derive(Debug)]
-    enum CustomError {
-        WhisperError(String),
-        // Add other kinds of errors here
-    }
-
-    impl From<WhisperError> for CustomError {
-        fn from(error: WhisperError) -> Self {
-            CustomError::WhisperError(format!("We can add more info to the error: {:?}", error))
-        }
-    }
-
-    /// Test for propagating a `WhisperError` as a `CustomError`.
-    ///
-    /// This test creates a new `Whisper` instance, sets the icon and message,
-    /// and calls the `whisper` method.
-    /// If a `WhisperError` occurs, it is converted to a `CustomError` with the original error and propagated up the call stack.
-    #[test]
-    fn test_whisper_map_err_and_propagate_to_original_error_and_custom_error(
-    ) -> Result<(), CustomError> {
-        Whisper::new()
-            .icon(IconKind::NfFaBug)
-            .message("test_whisper_map_err_and_propagate_to_original_error_and_custom_error")
-            .whisper()
-            .map_err(|err| CustomError::from(err))?; // Ok or Convert from WhisperError to CustomError, pass the original error and Propagate Error
-
-        Ok(())
-    }
-
-    /// If a `WhisperError` occurs, it is converted to a `CustomError` the original error is not propagated up the call stack.
-    #[test]
-    fn test_whisper_map_err_and_convert_to_custom_error_discard_original_error(
-    ) -> Result<(), CustomError> {
-        Whisper::new()
-            .icon(IconKind::NfFaBug)
-            .message("test_whisper_map_err_and_convert_to_custom_error_discard_original_error")
-            .whisper()
-            .map_err(CustomError::from)?; // Ok or Convert from WhisperError to CustomError and Propagate Error, dont pass the original
-        Ok(())
-    }
-
-    #[test]
-    fn test_whisper_match() {
-        let whisper = Whisper::new()
-            .icon(IconKind::NfFaBug)
-            .message("test_whisper_match");
-
-        match whisper.whisper() {
-            Ok(()) => println!("Message printed successfully"),
-            Err(error) => eprintln!("Failed to print message: {error}",),
-        }
-    }
-
-    #[test]
-    fn test_whisper_if_let() {
-        let whisper = Whisper::new()
-            .icon(IconKind::NfFaBug)
-            .message("test_whisper_if_let");
-
-        if let Err(error) = whisper.whisper() {
-            eprintln!("Failed to print message: {error}",);
-        }
-    }
-
-    #[test]
-    fn box_dyn_error() -> Result<(), Box<dyn std::error::Error>> {
-        Whisper::new()
-            .icon(IconKind::NfFaBug)
-            .message("box_dyn_error")
-            .whisper()?;
-        Ok(())
-    }
-}
-
-#[cfg(test)]
 mod whisper_error_tests {
     use super::*;
 
     #[test]
     fn whisper_error_lock_error() {
         let error = WhisperError::Lock;
-        assert_eq!(format!("{}", error), "Failed to acquire lock on ICON_MAP");
+        assert_eq!(format!("{error}"), "Failed to acquire lock on ICON_MAP");
     }
 
     #[test]
     fn whisper_error_print_error() {
         let error = WhisperError::Print;
-        assert_eq!(format!("{}", error), "Failed to print message");
+        assert_eq!(format!("{error}"), "Failed to print message");
     }
 
     #[test]
     fn whisper_error_write_error() {
         let error = WhisperError::Write;
-        assert_eq!(format!("{}", error), "Error writing to buffer");
+        assert_eq!(format!("{error}"), "Error writing to buffer");
     }
 
     #[test]
     fn whisper_error_flush_error() {
         let error = WhisperError::Flush;
-        assert_eq!(format!("{}", error), "Error flushing buffer");
+        assert_eq!(format!("{error}"), "Error flushing buffer");
     }
 }
