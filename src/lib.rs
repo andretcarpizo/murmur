@@ -292,10 +292,11 @@
 //!  }
 //! ```
 
-mod icon_map;
-pub use icon_map::IconKind;
-
 mod color_map;
+mod icon_map;
+
+// Re-exports
+pub use icon_map::IconKind;
 
 use core::fmt::{Debug, Display};
 use std::io::{self, BufWriter, Write};
