@@ -1,34 +1,34 @@
-
  # murmur
-[![github](https://img.shields.io/badge/github-andretcarpizo/murmur-blue.svg)](https://github.com/andretcarpizo/murmur)
-[![Crates.io](https://img.shields.io/crates/v/murmur.svg)](https://crates.io/crates/murmur)
-[![Documentation](https://docs.rs/murmur/badge.svg)](https://docs.rs/murmur)
+ [[github](https:img.shields.iobadgegithub-andretcarpizomurmur-blue.svg)](https:github.comandretcarpizomurmur)
+ [[Crates.io](https:img.shields.iocratesvmurmur.svg)](https:crates.iocratesmurmur)
+ [[Documentation](https:docs.rsmurmurbadge.svg)](https:docs.rsmurmur)
 
 This library provides a simple and flexible way to format colored stdout messages with optional `NerdFonts` or `Unicode` icons.
 
  Table of Contents
-1. [Usage](#usage)
-2. [`IconKind` Variants](#iconkind-variants)
-3. [`Whisper` Methods](#whisper-methods)
-4. [Handling Errors with Default Methods](#handling-errors-with-default-methods)
-5. [Customizing Error Handling](#customizing-error-handling)
-6. [Integrating thiserror](#integrating-thiserror)
+ 1. [Usage](#usage)
+ 2. [`IconKind` Variants](#iconkind-variants)
+ 3. [`Whisper` Methods](#whisper-methods)
+ 4. [Handling Errors with Default Methods](#handling-errors-with-default-methods)
+ 5. [Customizing Error Handling](#customizing-error-handling)
+ 6. [Integrating thiserror](#integrating-thiserror)
+
+ ## Usage
 
  ```toml
  [dependencies]
  murmur = "0.1.0"
  ```
- ## Usage
-
- This crate provides a `Whisper` struct and an `IconKind` enum.
+ There is only a `Whisper` struct and an `IconKind` enum.
 
  ```rust
  use murmur::{Whisper, IconKind};
  ```
+
  ## `IconKind` Variants
 
  The `IconKind` enum variants map to a specific icon, each icon has a default color.
- Casing conforms to [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/naming.html).
+ Casing conforms to [Rust API Guidelines](https:rust-lang.github.ioapi-guidelinesnaming.html).
 
   * `NfFaCheck`
   * `NfFaTimes`
@@ -52,13 +52,13 @@ This library provides a simple and flexible way to format colored stdout message
      .unwrap();
  ```
 
- You must have [NerdFonts](https://www.nerdfonts.com/) installed to use the `Nf` variants.
- - [Nerfonts github](https://github.com/ryanoasis/nerd-fonts?tab=readme-ov-files)
- - [NerdFonts cheat-sheet](https://www.nerdfonts.com/cheat-sheet)
+ You must have [NerdFonts](https:www.nerdfonts.com) installed to use the `Nf` variants.
+ - [Nerfonts github](https:github.comryanoasisnerd-fonts?tab=readme-ov-files)
+ - [NerdFonts cheat-sheet](https:www.nerdfonts.comcheat-sheet)
 
  ## `Whisper` methods:
 
- The `Whisper` struct is a fluent builder that provides the following methods:
+ The `Whisper` struct provides the following methods:
 
  - `new()`: Creates a new `Whisper` instance
  - `.icon()`: Adds an icon to the `Whisper` instance
@@ -232,7 +232,7 @@ This library provides a simple and flexible way to format colored stdout message
 
 impl From<WhisperError> for CustomError {
   fn from(error: WhisperError) -> Self {
-    Self::WhisperError(format!("We can add more info to the error: {error}"))
+    Self::WhisperError(format("We can add more info to the error: {error}"))
   }
 }
 
@@ -277,3 +277,4 @@ impl From<WhisperError> for CustomError {
    Ok(())
   }
  ```
+

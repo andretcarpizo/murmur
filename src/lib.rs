@@ -13,17 +13,18 @@
 //! 5. [Customizing Error Handling](#customizing-error-handling)
 //! 6. [Integrating thiserror](#integrating-thiserror)
 //!
+//! ## Usage
+//!
 //! ```toml
 //! [dependencies]
 //! murmur = "0.1.0"
 //! ```
-//!
-//! ## Usage
-//! This crate provides a `Whisper` struct and an `IconKind` enum.
+//! There is only a `Whisper` struct and an `IconKind` enum.
 //!
 //! ```rust
 //! use murmur::{Whisper, IconKind};
 //! ```
+//!
 //! ## `IconKind` Variants
 //!
 //! The `IconKind` enum variants map to a specific icon, each icon has a default color.
@@ -56,7 +57,7 @@
 //!
 //! ## `Whisper` methods:
 //!
-//! The `Whisper` struct is a fluent builder that provides the following methods:
+//! The `Whisper` struct provides the following methods:
 //!
 //! - `new()`: Creates a new `Whisper` instance
 //! - `.icon()`: Adds an icon to the `Whisper` instance
