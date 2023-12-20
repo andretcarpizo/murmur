@@ -16,6 +16,10 @@ args = ["set-version", "${VERSION}"]
 command = "cargo"
 args = ["clean", "--release"]
 
+[tasks.doc]
+command = "cargo"
+args = ["doc"]
+
 [tasks.build-release]
 command = "cargo"
 args = ["build", "--release"]
@@ -53,6 +57,7 @@ dependencies = [
     "format",
     "set-version",
     "clean-release",
+    "doc",
     "build-release",
     "git-add",
     "git-commit",

@@ -46,7 +46,7 @@ This library provides a simple and flexible way to format colored messages with 
  use murmur::{Whisper, IconKind};
  use owo_colors::OwoColorize;
 
-     Whisper::new()
+Whisper::new()
      .icon(IconKind::NfFaCheck)
      .message("message")
      .message("message".red())

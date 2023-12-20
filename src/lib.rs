@@ -43,9 +43,9 @@
 //!  For a full list of the currently supported icons, see the `IconKind` enum.
 //! ```rust
 //! use murmur::{Whisper, IconKind};
-//! use owo_colors::OwoColorize;
+//! use owo_colors::OwoColorize;//!
 //!
-//!     Whisper::new()
+//! Whisper::new()
 //!     .icon(IconKind::NfFaCheck)
 //!     .message("message")
 //!     .message("message".red())
