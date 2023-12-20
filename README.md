@@ -30,20 +30,20 @@ This library provides a simple and flexible way to format colored stdout message
  The `IconKind` enum variants map to a specific icon, each icon has a default color.
  Casing conforms to [Rust API Guidelines](https:rust-lang.github.ioapi-guidelinesnaming.html).
 
-  * `NfFaTimes`
-  * `NfFaCheck`
-  * `NfFaInfoCircle`
-  * `NfFaRefresh`
-  * `NfFaWarning`
-  * `NfFaBug`
+ - `NfFaTimes`
+ - `NfFaCheck`
+ - `NfFaInfoCircle`
+ - `NfFaRefresh`
+ - `NfFaWarning`
+ - `NfFaBug`
 
 
-  * `UnicodeCrossMark`
-  * `UnicodeCheckMark`
-  * `UnicodeInformationSource`
-  * `UnicodeGear`
-  * `UnicodeWarningSign`
-  * `UnicodeBug`
+ - `UnicodeCrossMark`
+ - `UnicodeCheckMark`
+ - `UnicodeInformationSource`
+ - `UnicodeGear`
+ - `UnicodeWarningSign`
+ - `UnicodeBug`
   
 
   For a full list of the currently supported icons, see the `IconKind` enum.
