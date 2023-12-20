@@ -2,6 +2,9 @@
 //! [![github](https://img.shields.io/badge/github-andretcarpizo/murmur-blue.svg)](https://github.com/andretcarpizo/murmur)
 //! [![Crates.io](https://img.shields.io/crates/v/murmur.svg)](https://crates.io/crates/murmur)
 //! [![Documentation](https://docs.rs/murmur/badge.svg)](https://docs.rs/murmur)
+//!
+//! This library provides a simple and flexible way to format colored stdout messages with optional `NerdFonts` or `Unicode` icons.
+//!
 //! Table of Contents
 //! 1. [Usage](#usage)
 //! 2. [`IconKind` Variants](#iconkind-variants)
@@ -9,8 +12,6 @@
 //! 4. [Handling Errors with Default Methods](#handling-errors-with-default-methods)
 //! 5. [Customizing Error Handling](#customizing-error-handling)
 //! 6. [Integrating thiserror](#integrating-thiserror)
-//!
-//! This library provides a simple and flexible way to format colored stdout messages with optional `NerdFonts` or `Unicode` icons.
 //!
 //! ```toml
 //! [dependencies]
