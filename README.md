@@ -53,8 +53,9 @@ This library provides a simple and flexible way to format colored stdout message
      .unwrap();
  ```
 
-
- [NerdFonts cheat-sheet](https:www.nerdfonts.comcheat-sheet)
+ You must have [NerdFonts](https://www.nerdfonts.com/) installed to use the `Nf` variants.
+ - [Nerfonts github](https://github.com/ryanoasis/nerd-fonts?tab=readme-ov-files)
+ - [NerdFonts cheat-sheet](https://www.nerdfonts.com/cheat-sheet)
 
  ## `Whisper` methods:
 
