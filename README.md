@@ -90,12 +90,12 @@ This library provides a simple and flexible way to format colored stdout message
  }
  ```
 
- This will output:
+ output:
 
  ``` text
  1 message without icon
- 2 message without icon indents by 2 spaces all messages after the first
- 3 message
+   2 message without icon indents by 2 spaces all messages after the first
+   3 message
  ```
 
  ### Adding a vector of messages to the `Whisper` instance
