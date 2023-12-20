@@ -132,6 +132,8 @@
 //! use murmur::{Whisper, IconKind, WhisperError};
 //! use std::io::{Error, ErrorKind};
 //!
+//!
+//!
 //! fn whisper_new() -> Result<(), WhisperError> {
 //!     let whisper = Whisper::new()
 //!         .icon(IconKind::NfFaBug)
@@ -139,7 +141,6 @@
 //!         .whisper()?;
 //!     Ok(())
 //! }
-//!
 //!
 //! fn whisper_unwrap() {
 //!     Whisper::new()
@@ -150,6 +151,7 @@
 //!         .whisper()
 //!         .unwrap();
 //! }
+//!
 //!
 //! fn whisper_unwrap_or_else() {
 //!     Whisper::new()
@@ -187,6 +189,15 @@
 //!     Ok(())
 //! }
 //!
+//! fn whisper_map_err_2() -> Result<(), Error> {
+//!     let err = "Hypothetical error message";
+//!     Whisper::new()
+//!         .icon(IconKind::NfFaTimes)
+//!         .message(&format!("Error executing command: {}", err))
+//!         .whisper()
+//!         .map_err(|_| Error::new(ErrorKind::Other, "Whisper failed"))?;
+//!     Ok(())
+//! }
 //! fn whisper_ok() {
 //!     Whisper::new()
 //!         .icon(IconKind::NfFaTimes)
@@ -334,7 +345,7 @@ pub enum WhisperError {
 ///     .icon(IconKind::NfFaBug)
 ///     .message("test_whisper_unwrap")
 ///     .whisper()
-///     .unwrap();
+///     .ok();
 /// ```
 #[derive(Debug, Clone, Eq, PartialEq, Default)]
 pub struct Whisper {
@@ -356,7 +367,7 @@ impl Whisper {
     ///     .icon(IconKind::NfFaBug)
     ///     .message("message")
     ///     .whisper()
-    ///     .unwrap();
+    ///     .map_err(|err| Error::new(ErrorKind::Other, err))?;
     /// ```
     #[must_use]
     pub fn new() -> Self {
