@@ -11,7 +11,6 @@ use std::fmt;
 use std::{collections::HashMap, sync::Mutex};
 
 /// `IconKind` is an enum representing different kinds of icons for formatting messages.
-/// Supports both `Unicode` and `NerdFonts` icons if you have a Nerd Font installed.
 ///
 ///  # Examples
 /// ```
@@ -25,7 +24,9 @@ use std::{collections::HashMap, sync::Mutex};
 ///
 /// ```
 ///
-/// [Nerd Fonts Cheat Sheet](https://www.nerdfonts.com/cheat-sheet)
+/// You must have [NerdFonts](https://www.nerdfonts.com/) installed to use the `Nf` variants.
+/// - [Nerfonts github](https://github.com/ryanoasis/nerd-fonts?tab=readme-ov-files)
+/// - [NerdFonts cheat-sheet](https://www.nerdfonts.com/cheat-sheet)
 #[derive(Debug, Clone, Eq, PartialEq, Hash, Sequence)]
 pub enum IconKind {
     NfFaTimes,
