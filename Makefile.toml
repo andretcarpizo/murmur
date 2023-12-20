@@ -43,7 +43,7 @@ args = ["push", "origin", "v${VERSION}"]
 
 [tasks.gh-release]
 command = "gh"
-args = ["release", "create", "v${VERSION}", "-F", "changelog.md"]
+args = ["release", "create", "v${VERSION}", "-F", "CHANGELOG.md"]
 
 [tasks.cargo-publish]
 command = "cargo"
