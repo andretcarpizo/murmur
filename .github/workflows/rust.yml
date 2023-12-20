@@ -41,4 +41,3 @@ jobs:
         run: cargo clippy --all-targets --all-features
         env:
           RUSTFLAGS: "-Dwarnings"
-          

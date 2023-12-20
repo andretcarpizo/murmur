@@ -2,6 +2,7 @@
 //! [![GitHub](https://img.shields.io/badge/github-murmur-blue.svg)](https://github.com/andretcarpizo/murmur)
 //! [![Crates.io](https://img.shields.io/crates/v/murmur.svg)](https://crates.io/crates/murmur)
 //! [![Documentation](https://docs.rs/murmur/badge.svg)](https://docs.rs/murmur)
+//! [![GitHub Actions](https://github.com/andretcarpizo/murmur/actions/workflows/rust.yml/badge.svg)](https://github.com/andretcarpizo/murmur/actions)
 //!
 //! This library provides a simple and flexible way to format colored messages with optional `NerdFonts` or `Unicode` icons.
 //!
