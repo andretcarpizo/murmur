@@ -4,6 +4,32 @@
 [![Crates.io](https://img.shields.io/crates/v/murmur.svg)](https://crates.io/crates/murmur)
 [![Documentation](https://docs.rs/murmur/badge.svg)](https://docs.rs/murmur)
 
+## Table of Contents
+
+1. [Usage](#usage)
+    - [IconKind Variants](#iconkind-variants)
+2. [Examples](#examples)
+    - [Creating a `Whisper` Instance](#creating-a-whisper-instance)
+    - [Chain of Messages Without an Icon](#chain-of-messages-without-an-icon)
+    - [Adding a Vector of Messages](#adding-a-vector-of-messages)
+3. [Whisper Methods](#whisper-methods)
+4. [Handling Errors with Default Methods](#handling-errors-with-default-methods)
+    - [whisper](#whisper)
+    - [whisper_new](#whisper_new)
+    - [whisper_unwrap](#whisper_unwrap)
+    - [whisper_unwrap_or_else](#whisper_unwrap_or_else)
+    - [whisper_expect](#whisper_expect)
+    - [whisper_map_err](#whisper_map_err)
+    - [whisper_ok](#whisper_ok)
+    - [whisper_box_dyn_error](#box_dyn_error)
+    - [whisper_match](#whisper_match)
+    - [whisper_if_let](#whisper_if_let)
+5. [Customizing Error Handling](#customizing-error-handling)
+    - [Explicit Closure for Error Conversion](#explicit-closure-for-error-conversion)
+    - [Function Reference for Error Conversion](#function-reference-for-error-conversion)
+6. [Integrating thiserror](#integrating-thiserror)
+    - [thiserror Error Conversion](#thiserror-error-conversion)
+
 This library provides a simple and flexible way to format colored stdout messages with optional `NerdFonts` or `Unicode` icons.
 
  ```toml
@@ -114,7 +140,7 @@ This library provides a simple and flexible way to format colored stdout message
  }
  ```
 
- ## Error Handling Examples
+ ## Handling Errors with Default Methods
 
  The `whisper` function returns  `-> Result<(), WhisperError>`
 
@@ -184,7 +210,7 @@ This library provides a simple and flexible way to format colored stdout message
          .ok();
  }
 
- fn box_dyn_error() -> Result<(), Box<dyn std::error::Error>> {
+ fn whisper_box_dyn_error() -> Result<(), Box<dyn std::error::Error>> {
     Whisper::new()
         .icon(IconKind::NfFaTimes)
        .message("box_dyn_error")
@@ -215,7 +241,7 @@ This library provides a simple and flexible way to format colored stdout message
      }
  }
  ```
- ## Custom Error Handling Examples
+ ## Customizing Error Handling
  ```rust
  use murmur::{Whisper, IconKind, WhisperError};
 
@@ -248,7 +274,7 @@ impl From<WhisperError> for CustomError {
      Ok(())
  }
  ```
- ### Using thiserror
+ ### Integrating thiserror
  ```rust
  use thiserror::Error;
  use murmur::{Whisper, IconKind, WhisperError};
