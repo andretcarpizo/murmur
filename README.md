@@ -36,8 +36,6 @@ This library provides a simple and flexible way to format colored stdout message
  - `NfFaRefresh`
  - `NfFaWarning`
  - `NfFaBug`
-
-
  - `UnicodeCrossMark`
  - `UnicodeCheckMark`
  - `UnicodeInformationSource`
