@@ -30,13 +30,21 @@
 //! The `IconKind` enum variants map to a specific icon, each icon has a default color.
 //! Casing conforms to [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/naming.html).
 //!
-//!  * `NfFaCheck`
-//!  * `NfFaTimes`
-//!  * `NfFaInfoCircle`
-//!  * `UnicodeCheckMark`
-//!  * `UnicodeCrossMark`
-//!  * `UnicodeWarningSign`
-//!  ...
+//! * `NfFaTimes`
+//! * `NfFaCheck`
+//! * `NfFaInfoCircle`
+//! * `NfFaRefresh`
+//! * `NfFaWarning`
+//! * `NfFaBug`
+//!
+//!
+//! * `UnicodeCrossMark`
+//! * `UnicodeCheckMark`
+//! * `UnicodeInformationSource`
+//! * `UnicodeGear`
+//! * `UnicodeWarningSign`
+//! * `UnicodeBug`
+//!
 //!
 //!  For a full list of the currently supported icons, see the `IconKind` enum.
 //! ```rust
