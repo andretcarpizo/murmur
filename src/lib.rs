@@ -1,5 +1,5 @@
 //! # murmur
-//! [![github](https://img.shields.io/badge/github-murmur-blue.svg)](https://github.com/andretcarpizo/murmur)
+//! [![GitHub](https://img.shields.io/badge/github-murmur-blue.svg)](https://github.com/andretcarpizo/murmur)
 //! [![Crates.io](https://img.shields.io/crates/v/murmur.svg)](https://crates.io/crates/murmur)
 //! [![Documentation](https://docs.rs/murmur/badge.svg)](https://docs.rs/murmur)
 //!
@@ -59,7 +59,7 @@
 //!
 //! <div class="warning">You must have NerdFonts installed to use the `Nf` variants.</div>
 //!
-//! - [Nerfonts github](https://github.com/ryanoasis/nerd-fonts?tab=readme-ov-files)
+//! - [NerdFonts GitHub](https://github.com/ryanoasis/nerd-fonts?tab=readme-ov-files)
 //! - [NerdFonts cheat-sheet](https://www.nerdfonts.com/cheat-sheet)
 //!
 //! ## `Whisper` methods:

@@ -1,5 +1,5 @@
  # murmur
-[![github](https://img.shields.io/badge/github-murmur-blue.svg)](https://github.com/andretcarpizo/murmur)
+[![GitHub](https://img.shields.io/badge/github-murmur-blue.svg)](https://github.com/andretcarpizo/murmur)
 [![Crates.io](https://img.shields.io/crates/v/murmur.svg)](https://crates.io/crates/murmur)
 [![Documentation](https://docs.rs/murmur/badge.svg)](https://docs.rs/murmur)
 
@@ -60,7 +60,7 @@ This library provides a simple and flexible way to format colored messages with 
  ```
 
  You must have [NerdFonts](https:www.nerdfonts.com) installed to use the `Nf` variants.
- - [Nerfonts github](https:github.comryanoasisnerd-fonts?tab=readme-ov-files)
+ - [Nerdfonts GitHub](https:github.comryanoasisnerd-fonts?tab=readme-ov-files)
  - [NerdFonts cheat-sheet](https:www.nerdfonts.comcheat-sheet)
 
  ## `Whisper` methods
