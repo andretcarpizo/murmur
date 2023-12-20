@@ -342,9 +342,9 @@ pub enum WhisperError {
 #[derive(Debug, Clone, Eq, PartialEq, Default)]
 pub struct Whisper {
     /// An optional field that specifies the kind of icon to be displayed.
-    icon_kind: Option<IconKind>,
+    pub icon_kind: Option<IconKind>,
     /// A vector of messages to be displayed.
-    messages: Vec<String>,
+    pub messages: Vec<String>,
 }
 
 impl Whisper {
