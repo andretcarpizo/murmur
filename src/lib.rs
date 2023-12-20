@@ -3,7 +3,7 @@
 //! [![Crates.io](https://img.shields.io/crates/v/murmur.svg)](https://crates.io/crates/murmur)
 //! [![Documentation](https://docs.rs/murmur/badge.svg)](https://docs.rs/murmur)
 //!
-//! This library provides a simple and flexible way to format colored stdout messages with optional `NerdFonts` or `Unicode` icons.
+//! This library provides a simple and flexible way to format colored messages with optional `NerdFonts` or `Unicode` icons.
 //!
 //! Table of Contents
 //! 1. [Usage](#usage)
