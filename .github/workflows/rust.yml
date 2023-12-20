@@ -10,11 +10,15 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build-windows:
+  build:
 
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
+
     strategy:
       matrix:
+        os:
+          - windows-latest
+          - ubuntu-latest
         toolchain:
           - stable
           - beta
@@ -28,20 +32,13 @@ jobs:
       - name: Run tests
         run: cargo test --verbose
 
-  build-ubuntu:
-
+  clippy:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        toolchain:
-          - stable
-          - beta
-          - nightly
-
+    needs: build  # Run this job after the build job
     steps:
       - uses: actions/checkout@v3
-      - run: rustup update ${{ matrix.toolchain }} && rustup default ${{ matrix.toolchain }}
-      - name: Build
-        run: cargo build --verbose
-      - name: Run tests
-        run: cargo test --verbose
+      - name: Run Clippy
+        run: cargo clippy --all-targets --all-features
+        env:
+          RUSTFLAGS: "-Dwarnings"
+          
