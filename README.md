@@ -15,10 +15,6 @@ This library provides a simple and flexible way to format colored messages with 
 
  ## Usage
 
- ```toml
- [dependencies]
- murmur = "0.3.1"
- ```
  There is only a `Whisper` struct and an `IconKind` enum.
 
  ```rust

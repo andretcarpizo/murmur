@@ -15,10 +15,6 @@
 //!
 //! ## Usage
 //!
-//! ```toml
-//! [dependencies]
-//! murmur = "0.1.0"
-//! ```
 //! There is only a `Whisper` struct and an `IconKind` enum.
 //!
 //! ```rust
