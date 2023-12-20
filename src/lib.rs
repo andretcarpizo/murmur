@@ -345,7 +345,7 @@ pub enum WhisperError {
 ///     .icon(IconKind::NfFaBug)
 ///     .message("test_whisper_unwrap")
 ///     .whisper()
-///     .ok();
+///     .unwrap();
 /// ```
 #[derive(Debug, Clone, Eq, PartialEq, Default)]
 pub struct Whisper {
@@ -367,7 +367,7 @@ impl Whisper {
     ///     .icon(IconKind::NfFaBug)
     ///     .message("message")
     ///     .whisper()
-    ///     .map_err(|err| Error::new(ErrorKind::Other, err))?;
+    ///     .ok();
     /// ```
     #[must_use]
     pub fn new() -> Self {
