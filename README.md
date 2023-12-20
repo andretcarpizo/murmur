@@ -62,7 +62,7 @@ This library provides a simple and flexible way to format colored stdout message
  - [Nerfonts github](https:github.comryanoasisnerd-fonts?tab=readme-ov-files)
  - [NerdFonts cheat-sheet](https:www.nerdfonts.comcheat-sheet)
 
- ## `Whisper` methods:
+ ## `Whisper` methods
 
  The `Whisper` struct provides the following methods:
 
