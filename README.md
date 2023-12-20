@@ -29,7 +29,7 @@ This library provides a simple and flexible way to format colored stdout message
  ## `IconKind` Variants
 
  The `IconKind` enum variants map to a specific icon, each icon has a default color.
- Casing conforms to [Rust API Guidelines](https:rust-lang.github.ioapi-guidelinesnaming.html#casing-conforms-to-idiomatic-rust-style).
+ Casing conforms to [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/naming.html).
 
   * `NfFaCheck`
   * `NfFaTimes`

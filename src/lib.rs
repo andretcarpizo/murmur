@@ -26,7 +26,7 @@
 //! ## `IconKind` Variants
 //!
 //! The `IconKind` enum variants map to a specific icon, each icon has a default color.
-//! Casing conforms to [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/naming.html#casing-conforms-to-idiomatic-rust-style).
+//! Casing conforms to [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/naming.html).
 //!
 //!  * `NfFaCheck`
 //!  * `NfFaTimes`
