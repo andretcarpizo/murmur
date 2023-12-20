@@ -51,11 +51,12 @@ This library provides a simple and flexible way to format colored stdout message
  use owo_colors::OwoColorize;
 
      Whisper::new()
-     .icon(IconKind::NfFaCheck)  default color is green
-     .message("message")  green
-     .message("message".red())  override this message color to red
+     .icon(IconKind::NfFaCheck)  //default color is green
+     .message("message")  //green
+     .message("message".red())  //override this message color to red
      .whisper()
      .unwrap();
+
  ```
 
  You must have [NerdFonts](https:www.nerdfonts.com) installed to use the `Nf` variants.
