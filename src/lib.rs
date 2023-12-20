@@ -1,5 +1,5 @@
 //! # murmur
-//! [![github](https://img.shields.io/badge/github-andretcarpizo/murmur-blue.svg)](https://github.com/murmur)
+//! [![github](https://img.shields.io/badge/github-murmur-blue.svg)](https://github.com/andretcarpizo/murmur)
 //! [![Crates.io](https://img.shields.io/crates/v/murmur.svg)](https://crates.io/crates/murmur)
 //! [![Documentation](https://docs.rs/murmur/badge.svg)](https://docs.rs/murmur)
 //!
