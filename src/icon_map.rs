@@ -34,6 +34,7 @@ pub enum IconKind {
     NfFaRefresh,
     NfFaWarning,
     NfFaBug,
+    NfOctDotFill,
 
     UnicodeCrossMark,
     UnicodeCheckMark,
@@ -68,6 +69,7 @@ pub static ICON_MAP: Lazy<Mutex<HashMap<IconKind, (&'static str, &'static str)>>
         icon_map.insert(IconKind::NfFaRefresh, ("\u{f021} ", "cyan")); // 
         icon_map.insert(IconKind::NfFaWarning, ("\u{f071} ", "yellow")); // 
         icon_map.insert(IconKind::NfFaBug, ("\u{f188} ", "red")); // 
+        icon_map.insert(IconKind::NfOctDotFill, ("\u{f444} ", "white")); // 
 
         // Unicode icons
         icon_map.insert(IconKind::UnicodeCrossMark, ("\u{274C} ", "red")); // ❌
