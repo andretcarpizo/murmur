@@ -18,7 +18,7 @@ args = ["clean", "--release"]
 
 [tasks.doc]
 command = "cargo"
-args = ["doc"]
+args = ["doc", "--no-deps", "--document-private-items"]
 
 [tasks.build-release]
 command = "cargo"
@@ -30,7 +30,7 @@ args = ["add", "--all"]
 
 [tasks.git-commit]
 command = "git"
-args = ["commit", "-m", "v${VERSION}"]
+args = ["commit", "-m", "Release: v${VERSION}"]
 
 [tasks.git-tag]
 command = "git"
