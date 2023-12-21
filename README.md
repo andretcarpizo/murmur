@@ -1,4 +1,5 @@
  # murmur
+ 
 [![GitHub](https://img.shields.io/badge/github-murmur-blue.svg)](https://github.com/andretcarpizo/murmur)
 [![Crates.io](https://img.shields.io/crates/v/murmur.svg)](https://crates.io/crates/murmur)
 [![Documentation](https://docs.rs/murmur/badge.svg)](https://docs.rs/murmur)
@@ -8,6 +9,7 @@
 This library provides a simple and flexible way to format colored messages with optional `NerdFonts` or `Unicode` icons.
 
  Table of Contents
+
  1. [Usage](#usage)
  2. [`IconKind` Variants](#iconkind-variants)
  3. [`Whisper` Methods](#whisper-methods)
@@ -25,7 +27,7 @@ This library provides a simple and flexible way to format colored messages with 
 
  ## `IconKind` Variants
 
- The `IconKind` enum variants map to a specific icon, each icon has a default color.
+ The `IconKind` Enum variants map to a specific icon, each icon has a default color.  
  Casing conforms to [Rust API Guidelines](https:rust-lang.github.ioapi-guidelinesnaming.html).
 
  - `NfFaTimes`
@@ -40,9 +42,8 @@ This library provides a simple and flexible way to format colored messages with 
  - `UnicodeGear`
  - `UnicodeWarningSign`
  - `UnicodeBug`
-  
 
-  For a full list of the currently supported icons, see the `IconKind` enum.
+  For a full list of the currently supported icons, see the `IconKind` Enum.
 
  ```rust
  use murmur::{Whisper, IconKind};
@@ -58,6 +59,7 @@ Whisper::new()
  ```
 
  You must have [NerdFonts](https:www.nerdfonts.com) installed to use the `Nf` variants.
+
  - [Nerdfonts GitHub](https:github.comryanoasisnerd-fonts?tab=readme-ov-files)
  - [NerdFonts cheat-sheet](https:www.nerdfonts.comcheat-sheet)
 
@@ -101,7 +103,7 @@ Whisper::new()
  }
  ```
 
- output:
+ Output:
 
  ``` text
  1 message without icon
@@ -127,7 +129,7 @@ Whisper::new()
 
  ## Handling Errors with Default Methods
 
- The `whisper` method returns  `-> Result<(), WhisperError>`
+ The `whisper` method returns `-> Result<(), WhisperError>`
 
  ```rust
  use murmur::{Whisper, IconKind, WhisperError};
@@ -287,5 +289,3 @@ impl From<WhisperError> for CustomError {
    Ok(())
   }
  ```
-
-
