@@ -106,25 +106,24 @@ use murmur::Whisper;
 use std::io::{Error, ErrorKind};
 
 fn main() -> Result<(), Error> {
-Whisper::new()
-    .message("1 message")
-    .message("2 message")
-    .message("3 message")
-    .whisper()
-    .map_err(|err| Error::new(ErrorKind::Other, err))?;
-   Ok(())
+    Whisper::new()
+        .message("1 message")
+        .message("2 message")
+        .message("3 message")
+        .whisper()
+        .map_err(|err| Error::new(ErrorKind::Other, err))?;
+    Ok(())
 }
 ```
+Output:
 
-output:
-
-``` text
+```
 1 message without icon
-  2 message without icon indents by 2 spaces all messages after the first
-  3 message
-```rust
+2 message without icon indents by 2 spaces all messages after the first
+3 message
+```
 
-### messages
+#### messages
 
 ```rust
 use murmur::Whisper;
@@ -138,9 +137,7 @@ Whisper::new()
     .messages(vec!["1 message without icon", "2 message", "3 message"])
     .whisper()
     .ok();
-
 ```
-
 ### Handling Errors with Default Methods
 
 The `whisper` method returns  `-> Result<(), WhisperError>`
