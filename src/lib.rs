@@ -478,6 +478,50 @@ impl Whisper {
         self
     }
 
+    /// Adds multiple messages to the `Whisper` instance.
+    ///
+    /// # Arguments
+    ///
+    /// * `messages`: An iterable collection of items, each implementing `Display`, `Debug`, and `AsRef<str>`.
+    ///
+    /// Returns a `Whisper` instance with the added messages.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use murmur::Whisper;
+    ///
+    /// // Example 1: Using an array
+    /// Whisper::new()
+    ///     .messages(["1 message without icon", "2 message", "3 message"])
+    ///     .whisper()
+    ///     .ok();
+    ///
+    /// // Example 2: Using an array with .iter()
+    /// Whisper::new()
+    ///     .messages(["1 message without icon", "2 message", "3 message"].iter())
+    ///     .whisper()
+    ///     .ok();
+    ///
+    /// // Example 3: Using a vector
+    /// Whisper::new()
+    ///     .messages(vec!["1 message without icon", "2 message", "3 message"])
+    ///     .whisper()
+    ///     .ok();
+    ///
+    /// ```
+    #[must_use]
+    pub fn messages<I, S>(mut self, messages: I) -> Self
+    where
+        I: IntoIterator<Item = S>,
+        S: Display + Debug + AsRef<str>,
+    {
+        for message in messages {
+            self.messages.push(message.as_ref().to_string());
+        }
+        self
+    }
+
     /// The `whisper` function is responsible for building the `Whisper` instance and printing the messages.
     /// It performs several steps to ensure the messages are printed correctly:
     ///
@@ -647,6 +691,25 @@ mod whisper_color_override_tests {
 #[cfg(test)]
 mod whisper_functionality_tests {
     use super::*;
+
+    #[test]
+    fn test_whisper_messages() {
+        Whisper::new()
+            .messages(["1 message without icon", "2 message", "3 message"])
+            .whisper()
+            .ok();
+
+        Whisper::new()
+            .messages(vec!["1 message without icon", "2 message", "3 message"])
+            .whisper()
+            .ok();
+
+        Whisper::new()
+            .messages(["1 message without icon", "2 message", "3 message"].iter())
+            .whisper()
+            .ok();
+    }
+
     #[test]
     fn test_whisper_no_icon_no_messages() {
         // Test creating a Whisper instance with no icon and no messages
