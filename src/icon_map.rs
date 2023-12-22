@@ -100,8 +100,8 @@ pub static ICON_MAP: Lazy<Mutex<HashMap<IconKind, (&'static str, &'static str)>>
         i_map.insert(IconKind::NfFaRefresh, ("\u{f021} ", CYAN)); // 
         i_map.insert(IconKind::NfFaWarning, ("\u{f071} ", YELLOW)); // 
         i_map.insert(IconKind::NfFaBug, ("\u{f188} ", RED)); // 
-        i_map.insert(IconKind::NfFaQuestion, ("\u{f128} ", WHITE)); // 
-        i_map.insert(IconKind::NfFaQuestionCircle, ("\u{f059} ", WHITE)); // 
+        i_map.insert(IconKind::NfFaQuestion, ("\u{f128} ", RED)); // 
+        i_map.insert(IconKind::NfFaQuestionCircle, ("\u{f059} ", RED)); // 
         i_map.insert(IconKind::NfFaTerminal, ("\u{f120} ", WHITE)); // 
         i_map.insert(IconKind::NfFaTrash, ("\u{f1f8} ", WHITE)); // 
         i_map.insert(IconKind::NfFaAngleRight, ("\u{f105} ", WHITE)); // 
