@@ -16,7 +16,6 @@ Table of Contents
 3. [`Whisper` Methods](#whisper-methods)
 4. [Handling Errors with Default Methods](#handling-errors-with-default-methods)
 5. [Customizing Error Handling](#customizing-error-handling)
-6. [Integrating thiserror](#integrating-thiserror)
 
 ### Usage
 
@@ -247,7 +246,7 @@ fn whisper_if_let() {
     }
 }
 
-fn whisper_execute_command(command: &str, args: &[&str]) -> Result<(), Error> {
+fn whisper_execute_command_example(command: &str, args: &[&str]) -> Result<(), Error> {
     let output = std::process::Command::new(command)
         .args(args)
         .output()?;
@@ -305,28 +304,6 @@ fn function_reference_for_error_conversion() -> Result<(), CustomError> {
     Ok(())
 }
 ```
-#### Integrating thiserror
-```rust
-use thiserror::Error;
-use murmur::{Whisper, IconKind, WhisperError};
 
-#[derive(Error, Debug)]
-enum CustomError {
-   #[error("We can add more info to the error: {0}")]
-  MyError(#[from] WhisperError),
-
-  #[error("We can add more info to the error")]
-  OtherError(),
-}
-
-fn thiserror_error_conversion() -> Result<(), CustomError> {
-   Whisper::new()
-     .icon(IconKind::NfFaTimes)
-     .message("Using thiserror")
-     .whisper()
-     .map_err(CustomError::from)?;
-  Ok(())
- }
-```
 
 License: MIT
