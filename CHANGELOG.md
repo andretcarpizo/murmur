@@ -1,17 +1,26 @@
-# Changelog
+# Change Log
+All notable changes to this project will be documented in this file.
 
-### [Unreleased]
+The format is based on [Keep a Changelog](http://keepachangelog.com/)
+and this project adheres to [Semantic Versioning](http://semver.org/).
 
-#### Features
+## [1.0.0] - 2023-12-21
 
-- Added `messages` function to `Whisper` struct.
+### Added
 
-#### Removed
+- Add `messages()`
 
-- **Breaking Change**: Deprecated `message_vec` function from the `Whisper` API. Use the `messages` function with an iterable collection instead.
+### Changed
 
-#### Documentation
+- Update dependencies: owo-colors to 4.0
 
-- Updated docs for the `messages` function to provide examples with arrays and vec.
+### Removed
+
+- **Breaking Change**: Remove `message_vec` function from the `Whisper` API. Use the `messages` function with an iterable collection instead.
+- Remove dependency: thiserror = "1.0"
+
+### Documentation
+
+- Update docs for the `messages` function.
 
 

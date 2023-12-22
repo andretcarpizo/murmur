@@ -14,8 +14,12 @@ Table of Contents
 1. [Usage](#usage)
 2. [`IconKind` Variants](#iconkind-variants)
 3. [`Whisper` Methods](#whisper-methods)
+   - [`new()`](#new)
+   - [`icon()`](#icon)
+   - [`message()`](#message)
+   - [`messages()`](#messages)
 4. [Handling Errors with Default Methods](#handling-errors-with-default-methods)
-5. [Customizing Error Handling](#customizing-error-handling)
+5. [Custom Error Handling](#customizing-error-handling)
 
 ### Usage
 
@@ -27,7 +31,7 @@ use murmur::{Whisper, IconKind};
 
 ### `IconKind` Variants
 
-The `IconKind` enum variants map to a specific icon, each icon has a default color.
+The `IconKind` enum variants map to a specific `Unicode` or `NerdFont` icon, each icon has a default color.
 Casing conforms to [Rust API Guidelines](https://rust-lang.github.io/api-guidelines/naming.html).
 
 - `NfFaTimes`
@@ -76,7 +80,7 @@ The `Whisper` struct provides the following methods:
 
 Here are some examples of how to use the `Whisper` struct.
 
-#### Creating a new `Whisper` instance, adding an icon and a message
+#### new
 
 ```rust
 use murmur::{Whisper, IconKind};
@@ -87,7 +91,15 @@ Whisper::new()
     .whisper()
     .ok();
 ```
-#### Adding a chain of messages to the `Whisper` instance without an icon
+
+#### icon
+```rust
+use murmur::{Whisper, IconKind};
+
+Whisper::new().icon(IconKind::UnicodeCheckMark).whisper().ok();
+```
+
+#### message
 
 ```rust
 use murmur::Whisper;
@@ -95,8 +107,8 @@ use std::io::{Error, ErrorKind};
 
 fn main() -> Result<(), Error> {
 Whisper::new()
-    .message("1 message without icon")
-    .message("2 message all messages after the first indents by 2 spaces")
+    .message("1 message")
+    .message("2 message")
     .message("3 message")
     .whisper()
     .map_err(|err| Error::new(ErrorKind::Other, err))?;
@@ -112,7 +124,7 @@ output:
   3 message
 ```rust
 
-### Adding messages to the `Whisper` instance
+### messages
 
 ```rust
 use murmur::Whisper;
