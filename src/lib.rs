@@ -470,40 +470,6 @@ impl Whisper {
         self
     }
 
-    //todo! deprecated remove in 1.0.0
-    /// Adds multiple messages to the `Whisper` instance.
-    ///
-    /// # Arguments
-    ///
-    /// * `messages`: A vector of messages to be added.
-    ///
-    /// # Returns
-    ///
-    /// A `Whisper` instance with the added messages.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use murmur::Whisper;
-    /// let whisper = Whisper::new()
-    ///   .message_vec(vec!["1 message without icon", "2 message", "3 message"])
-    ///   .whisper()
-    ///   .unwrap();
-    /// ```
-    /// # Output
-    /// ```text
-    /// 1 message without icon
-    ///   2 message without icon indents by 2 spaces all messages after the first
-    ///   3 message
-    /// ```
-    #[must_use]
-    pub fn message_vec<T: Display + Debug>(mut self, messages: Vec<T>) -> Self {
-        for message in messages {
-            self.messages.push(message.to_string());
-        }
-        self
-    }
-
     /// Adds multiple messages to the `Whisper` instance.
     ///
     /// # Arguments
@@ -518,15 +484,21 @@ impl Whisper {
     /// use murmur::Whisper;
     ///
     /// Whisper::new()
-    ///     .messages(["1 message without icon", "2 message", "3 message"])
+    ///     .messages(["1 message", "2 message", "3 message"])
     ///     .whisper()
     ///     .ok();
     ///
     /// Whisper::new()
-    ///     .messages(vec!["1 message without icon", "2 message", "3 message"])
+    ///     .messages(vec!["1 message", "2 message", "3 message"])
     ///     .whisper()
     ///     .ok();
     ///
+    /// ```
+    /// # Output
+    /// ```text
+    /// 1 message
+    ///   2 message
+    ///   3 message
     /// ```
     #[must_use]
     pub fn messages<I, S>(mut self, messages: I) -> Self
