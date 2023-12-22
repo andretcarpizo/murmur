@@ -34,7 +34,20 @@ pub enum IconKind {
     NfFaRefresh,
     NfFaWarning,
     NfFaBug,
+    NfFaQuestion,
+    NfFaQuestionCircle,
+    NfFaTerminal,
+    NfFaTrash,
+    NfFaAngleRight,
+    NfFaAngleLeft,
+    NfFaAngleUp,
+    NfFaAngleDown,
+    NfFaThumbsUp,
+    NfFaThumbsDown,
+    NfFaeCcCc,
+
     NfOctDotFill,
+
     NfMdGreaterThan,
     NfMdLessThan,
     NfMdEqual,
@@ -87,7 +100,20 @@ pub static ICON_MAP: Lazy<Mutex<HashMap<IconKind, (&'static str, &'static str)>>
         i_map.insert(IconKind::NfFaRefresh, ("\u{f021} ", CYAN)); // 
         i_map.insert(IconKind::NfFaWarning, ("\u{f071} ", YELLOW)); // 
         i_map.insert(IconKind::NfFaBug, ("\u{f188} ", RED)); // 
+        i_map.insert(IconKind::NfFaQuestion, ("\u{f128} ", WHITE)); // 
+        i_map.insert(IconKind::NfFaQuestionCircle, ("\u{f059} ", WHITE)); // 
+        i_map.insert(IconKind::NfFaTerminal, ("\u{f120} ", WHITE)); // 
+        i_map.insert(IconKind::NfFaTrash, ("\u{f1f8} ", WHITE)); // 
+        i_map.insert(IconKind::NfFaAngleRight, ("\u{f105} ", WHITE)); // 
+        i_map.insert(IconKind::NfFaAngleLeft, ("\u{f104} ", WHITE)); // 
+        i_map.insert(IconKind::NfFaAngleUp, ("\u{f106} ", WHITE)); // 
+        i_map.insert(IconKind::NfFaAngleDown, ("\u{f107} ", WHITE)); // 
+        i_map.insert(IconKind::NfFaThumbsUp, ("\u{f164} ", GREEN)); // 
+        i_map.insert(IconKind::NfFaThumbsDown, ("\u{f165} ", RED)); // 
+        i_map.insert(IconKind::NfFaeCcCc, ("\u{e291} ", WHITE)); // 
+
         i_map.insert(IconKind::NfOctDotFill, ("\u{f444} ", WHITE)); // 
+
         i_map.insert(IconKind::NfMdGreaterThan, ("\u{f096d} ", WHITE)); // 󰥭
         i_map.insert(IconKind::NfMdLessThan, ("\u{f097c} ", WHITE)); // 󰥼
         i_map.insert(IconKind::NfMdEqual, ("\u{f01fc} ", WHITE)); // 󰇼
