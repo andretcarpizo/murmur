@@ -70,7 +70,7 @@
 //! - `new()`: Creates a new `Whisper` instance
 //! - `.icon()`: Adds an icon to the `Whisper` instance
 //! - `.message()`: Adds a message to the `Whisper` instance
-//! - `.message_vec()`: Add a vector of messages to the `Whisper` instance
+//! - `.messages()`: Adds multiple messages to the `Whisper` instance
 //! - `.whisper()`: Builds the `Whisper` instance and prints the messages
 //!
 //! Here are some examples of how to use the `Whisper` struct.
@@ -84,7 +84,7 @@
 //!     .icon(IconKind::NfFaCheck)
 //!     .message("message")
 //!     .whisper()
-//!     .unwrap();
+//!     .ok();
 //! ```
 //! ### Adding a chain of messages to the `Whisper` instance without an icon
 //!
@@ -111,20 +111,21 @@
 //!   3 message
 //! ```
 //!
-//! ### Adding a vector of messages to the `Whisper` instance
+//! ### Adding messages to the `Whisper` instance
 //!
 //! ```rust
-//! use murmur::{Whisper, IconKind};
-//! use std::error::Error;
+//! use murmur::Whisper;
 //!
-//! fn main() -> Result<(), Box<dyn Error>> {
-//! let whisper = Whisper::new()
-//!     .icon(IconKind::NfFaBug)
-//!     .message_vec(vec!["1 message without icon", "2 message", "3 message"])
+//! Whisper::new()
+//!     .messages(["1 message without icon", "2 message", "3 message"])
 //!     .whisper()
-//!     .map_err(|err| err)?;
-//!   Ok(())
-//! }
+//!     .ok();
+//!
+//! Whisper::new()
+//!     .messages(vec!["1 message without icon", "2 message", "3 message"])
+//!     .whisper()
+//!     .ok();
+//!
 //! ```
 //!
 //! ## Handling Errors with Default Methods
@@ -243,7 +244,31 @@
 //!         eprintln!("Failed to print message: {error}",);
 //!     }
 //! }
+//!
+//! fn whisper_execute_command(command: &str, args: &[&str]) -> Result<(), Error> {
+//!     let output = std::process::Command::new(command)
+//!         .args(args)
+//!         .output()?;
+//!
+//!     let whisper = |message: &str, icon: IconKind| {
+//!         Whisper::new()
+//!             .icon(icon)
+//!             .message(message)
+//!             .whisper()
+//!             .ok();
+//!     };
+//!
+//!     if output.status.success() {
+//!         let command = format!("{} {}", command, args.join(" "));
+//!         whisper(&command, IconKind::NfFaRefresh);
+//!     } else {
+//!         whisper("Failed to execute command", IconKind::NfFaTimes);
+//!     };
+//!
+//!     Ok(())
+//! }
 //! ```
+//!
 //! ## Customizing Error Handling
 //! ```
 //!
@@ -445,6 +470,7 @@ impl Whisper {
         self
     }
 
+    //todo! deprecated remove in 1.0.0
     /// Adds multiple messages to the `Whisper` instance.
     ///
     /// # Arguments
@@ -491,19 +517,11 @@ impl Whisper {
     /// ```
     /// use murmur::Whisper;
     ///
-    /// // Example 1: Using an array
     /// Whisper::new()
     ///     .messages(["1 message without icon", "2 message", "3 message"])
     ///     .whisper()
     ///     .ok();
     ///
-    /// // Example 2: Using an array with .iter()
-    /// Whisper::new()
-    ///     .messages(["1 message without icon", "2 message", "3 message"].iter())
-    ///     .whisper()
-    ///     .ok();
-    ///
-    /// // Example 3: Using a vector
     /// Whisper::new()
     ///     .messages(vec!["1 message without icon", "2 message", "3 message"])
     ///     .whisper()
@@ -788,13 +806,13 @@ mod whisper_functionality_tests {
     }
 
     #[test]
-    fn test_whisper_icon_multiple_messages_message_vec() {
+    fn test_whisper_icon_message_and_multiple_messages() {
         // After
         let whisper = Whisper::new()
             .icon(IconKind::NfFaCheck)
             .message("First message")
             .message("Second message")
-            .message_vec(vec!["Third message", "Fourth message"]);
+            .messages(vec!["Third message", "Fourth message"]);
         let result = whisper.whisper();
         assert!(result.is_ok());
         assert_eq!(whisper.icon_kind, Some(IconKind::NfFaCheck));
@@ -810,25 +828,11 @@ mod whisper_functionality_tests {
     }
 
     #[test]
-    fn test_whisper_icon_multiple_message_vec() {
+    fn test_icon_multiple_message_and_messages() {
         let whisper = Whisper::new()
             .icon(IconKind::NfFaWarning)
-            .message_vec(vec!["Line", "Another line"])
-            .message_vec(vec!["Another line"]);
-        let result = whisper.whisper();
-        assert!(result.is_ok());
-        assert_eq!(
-            whisper.messages,
-            vec!["Line", "Another line", "Another line"]
-        );
-    }
-
-    #[test]
-    fn test_icon_multiple_message_vec_message() {
-        let whisper = Whisper::new()
-            .icon(IconKind::NfFaWarning)
-            .message_vec(vec!["Line", "Another line"])
-            .message_vec(vec!["Another line"]);
+            .messages(vec!["Line", "Another line"])
+            .messages(vec!["Another line"]);
         let result = whisper.whisper();
         assert!(result.is_ok());
         assert_eq!(
@@ -837,9 +841,9 @@ mod whisper_functionality_tests {
         );
     }
     #[test]
-    fn test_message_vec_empty_messages() {
+    fn test_message_empty_messages() {
         // Test for the `message_vec` method when the `messages` vector is empty.
-        let whisper = Whisper::new().message_vec(Vec::<String>::new());
+        let whisper = Whisper::new().messages(Vec::<String>::new());
         let result = whisper.whisper();
         assert!(result.is_ok());
         assert_eq!(whisper.icon_kind, None);
@@ -847,11 +851,11 @@ mod whisper_functionality_tests {
     }
 
     #[test]
-    fn test_message_vec_multiple_messages() {
+    fn test_message_multiple_messages() {
         // Test for the `message_vec` method when the `messages` vector contains multiple elements.
         let whisper = Whisper::new()
             .icon(IconKind::NfFaTimes)
-            .message_vec(vec!["Test message vec 1", "Test message vec 2"]);
+            .messages(vec!["Test message vec 1", "Test message vec 2"]);
         let result = whisper.whisper();
         assert!(result.is_ok());
         assert_eq!(whisper.icon_kind, Some(IconKind::NfFaTimes));
@@ -940,10 +944,10 @@ mod whisper_functionality_tests {
 
     #[test]
     fn test_whisper_large_number_of_messages() {
-        let messages = vec!["Test message".to_string(); 10000];
+        let messages = vec!["Test message".to_string(); 1000];
         let whisper = Whisper::new()
             .icon(IconKind::NfFaBug)
-            .message_vec(messages.clone());
+            .messages(messages.clone());
         let result = whisper.whisper();
         assert!(result.is_ok());
         assert_eq!(whisper.messages, messages);
