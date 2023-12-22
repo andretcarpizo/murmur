@@ -311,6 +311,7 @@
 //! }
 //! ```
 //!
+//todo! add link enums to iconkind docs
 
 mod color_map;
 mod icon_map;
