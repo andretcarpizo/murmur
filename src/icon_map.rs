@@ -116,7 +116,7 @@ mod icon_map_tests {
     use enum_iterator::all;
 
     #[test]
-    fn color_eyre_install_setup() -> Result<(), Report> {
+    fn test_color_eyre_install_setup() -> Result<(), Report> {
         color_eyre::install()?;
         Whisper::new().message("color_eyre installed").whisper()?;
         Ok(())
@@ -156,6 +156,21 @@ mod icon_map_tests {
                     icon_kind,
                     ICON_MAP.lock().unwrap().get(icon_kind).unwrap().0
                 );
+            });
+    }
+
+    #[test]
+    fn test_whisper_all_icons() {
+        all::<IconKind>()
+            .collect::<Vec<_>>()
+            .iter()
+            .for_each(|icon_kind| {
+                #[rustfmt::skip]
+                Whisper::new()
+                    .icon(icon_kind.clone())
+                    .message(format!("{}: {}", icon_kind, ICON_MAP.lock().unwrap().get(icon_kind).unwrap().0))
+                    .whisper()
+                    .unwrap();
             });
     }
 
