@@ -14,7 +14,6 @@
 //! 3. [`Whisper` Methods](#whisper-methods)
 //! 4. [Handling Errors with Default Methods](#handling-errors-with-default-methods)
 //! 5. [Customizing Error Handling](#customizing-error-handling)
-//! 6. [Integrating thiserror](#integrating-thiserror)
 //!
 //! ## Usage
 //!
@@ -245,7 +244,7 @@
 //!     }
 //! }
 //!
-//! fn whisper_execute_command(command: &str, args: &[&str]) -> Result<(), Error> {
+//! fn whisper_execute_command_example(command: &str, args: &[&str]) -> Result<(), Error> {
 //!     let output = std::process::Command::new(command)
 //!         .args(args)
 //!         .output()?;
@@ -303,29 +302,7 @@
 //!     Ok(())
 //! }
 //! ```
-//! ### Integrating thiserror
-//! ```
-//! use thiserror::Error;
-//! use murmur::{Whisper, IconKind, WhisperError};
 //!
-//! #[derive(Error, Debug)]
-//! enum CustomError {
-//!    #[error("We can add more info to the error: {0}")]
-//!   MyError(#[from] WhisperError),
-//!
-//!   #[error("We can add more info to the error")]
-//!   OtherError(),
-//! }
-//!
-//! fn thiserror_error_conversion() -> Result<(), CustomError> {
-//!    Whisper::new()
-//!      .icon(IconKind::NfFaTimes)
-//!      .message("Using thiserror")
-//!      .whisper()
-//!      .map_err(CustomError::from)?;
-//!   Ok(())
-//!  }
-//! ```
 
 mod color_map;
 mod icon_map;
@@ -334,28 +311,37 @@ mod icon_map;
 pub use icon_map::IconKind;
 
 use core::fmt::{Debug, Display};
+use std::fmt;
 use std::io::{self, BufWriter, Write};
-use thiserror::Error;
 
 /// The `WhisperError` enum represents different kinds of errors that can occur while printing messages.
-#[derive(Debug, Error)]
+#[derive(Debug)]
 pub enum WhisperError {
     /// Error acquiring lock on ICON_MAP
-    #[error("Failed to acquire lock on ICON_MAP")]
     Lock,
 
     /// Error printing message
-    #[error("Failed to print message")]
     Print,
 
     /// Error writing to buffer
-    #[error("Error writing to buffer")]
     Write,
 
     /// Error flushing buffer
-    #[error("Error flushing buffer")]
     Flush,
 }
+
+impl Display for WhisperError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Self::Lock => write!(f, "Failed to acquire lock on ICON_MAP"),
+            Self::Print => write!(f, "Failed to print message"),
+            Self::Write => write!(f, "Error writing to buffer"),
+            Self::Flush => write!(f, "Error flushing buffer"),
+        }
+    }
+}
+
+impl std::error::Error for WhisperError {}
 
 /// Represents a collection of messages with an optional icon and message
 ///
