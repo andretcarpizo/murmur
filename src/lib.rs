@@ -373,7 +373,7 @@ pub enum WhisperError {
 ///     .icon(IconKind::NfFaBug)
 ///     .message("test_whisper_unwrap")
 ///     .whisper()
-///     .unwrap();
+///     .ok();
 /// ```
 #[derive(Debug, Clone, Eq, PartialEq, Default)]
 pub struct Whisper {
@@ -456,7 +456,7 @@ impl Whisper {
     ///    .message("2 message")
     ///    .message("3 message")
     ///    .whisper()
-    ///    .unwrap();
+    ///    .ok();
     /// ```
     /// # Output
     /// ```text
