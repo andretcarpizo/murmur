@@ -1,55 +1,88 @@
 [env]
-VERSION = "1.0.1"
-
-[tasks.cargo-fmt]
-install_crate = "rustfmt"
-command = "cargo"
-args = ["fmt"]
-
-[tasks.cargo-edit-set-version]
-install_crate = "cargo-edit"
-command = "cargo"
-args = ["set-version", "${VERSION}"]
-
-[tasks.cargo-clean-release]
-command = "cargo"
-args = ["clean", "--release"]
-
-[tasks.cargo-doc]
-command = "cargo"
-args = ["doc", "--no-deps", "--document-private-items"]
+VERSION = "1.1.0"
 
 [tasks.cargo-build-release]
+args = [
+    "build",
+    "--release",
+]
 command = "cargo"
-args = ["build", "--release"]
 
-[tasks.git-add-all]
-command = "git"
-args = ["add", "--all"]
+[tasks.cargo-clean-release]
+args = [
+    "clean",
+    "--release",
+]
+command = "cargo"
 
-[tasks.git-commit]
-command = "git"
-args = ["commit", "-m", "Release: v${VERSION}"]
+[tasks.cargo-doc]
+args = [
+    "doc",
+    "--no-deps",
+    "--document-private-items",
+]
+command = "cargo"
 
-[tasks.git-tag]
-command = "git"
-args = ["tag", "v${VERSION}"]
+[tasks.cargo-edit-set-version]
+args = [
+    "set-version",
+    "${VERSION}",
+]
+command = "cargo"
+install_crate = "cargo-edit"
 
-[tasks.git-push]
-command = "git"
-args = ["push"]
-
-[tasks.git-push-tag]
-command = "git"
-args = ["push", "origin", "v${VERSION}"]
-
-[tasks.gh-release]
-command = "gh"
-args = ["release", "create", "v${VERSION}", "-F", "CHANGELOG.md"]
+[tasks.cargo-fmt]
+args = ["fmt"]
+command = "cargo"
+install_crate = "rustfmt"
 
 [tasks.cargo-publish]
-command = "cargo"
 args = ["publish"]
+command = "cargo"
+
+[tasks.gh-release]
+args = [
+    "release",
+    "create",
+    "v${VERSION}",
+    "-F",
+    "CHANGELOG.md",
+]
+command = "gh"
+
+[tasks.git-add-all]
+args = [
+    "add",
+    "--all",
+]
+command = "git"
+
+[tasks.git-commit]
+args = [
+    "commit",
+    "-m",
+    "Release: v${VERSION}",
+]
+command = "git"
+
+[tasks.git-push]
+args = ["push"]
+command = "git"
+
+[tasks.git-push-tag]
+args = [
+    "push",
+    "origin",
+    "v${VERSION}",
+]
+command = "git"
+
+[tasks.git-tag]
+args = [
+    "tag",
+    "v${VERSION}",
+]
+command = "git"
 
 [tasks.release]
 dependencies = [
@@ -64,5 +97,5 @@ dependencies = [
     "git-push",
     "git-push-tag",
     "gh-release",
-    "cargo-publish"
+    "cargo-publish",
 ]

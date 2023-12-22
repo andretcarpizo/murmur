@@ -35,6 +35,13 @@ pub enum IconKind {
     NfFaWarning,
     NfFaBug,
     NfOctDotFill,
+    NfMdGreaterThan,
+    NfMdLessThan,
+    NfMdEqual,
+    NfMdThumbsUp,
+    NfMdThumbsDown,
+    NfMdFolder,
+    NfMdFolderOpen,
 
     UnicodeCrossMark,
     UnicodeCheckMark,
@@ -51,6 +58,17 @@ impl fmt::Display for IconKind {
     }
 }
 
+/// Red color.
+const RED: &str = "red";
+/// Green color.
+const GREEN: &str = "green";
+/// White color.
+const WHITE: &str = "white";
+/// Yellow color.
+const YELLOW: &str = "yellow";
+/// Cyan color.
+const CYAN: &str = "cyan";
+
 /// A static `ICON_MAP` that maps `IconKind` to a tuple of icon and color.
 ///
 /// This map is lazily initialized and thread-safe. It contains mappings for both `NerdFont` and Unicode icons.
@@ -61,31 +79,33 @@ impl fmt::Display for IconKind {
 /// If the `tracing` feature is enabled, an informational message will be logged when the `ICON_MAP` is initialized.
 pub static ICON_MAP: Lazy<Mutex<HashMap<IconKind, (&'static str, &'static str)>>> =
     Lazy::new(|| {
-        let mut icon_map = HashMap::new();
+        let mut i_map = HashMap::new();
         // Nerd Font icons
-        icon_map.insert(IconKind::NfFaTimes, ("\u{f00d} ", "red")); // 
-        icon_map.insert(IconKind::NfFaCheck, ("\u{f00c} ", "green")); // 
-        icon_map.insert(IconKind::NfFaInfoCircle, ("\u{f05a} ", "white")); // 
-        icon_map.insert(IconKind::NfFaRefresh, ("\u{f021} ", "cyan")); // 
-        icon_map.insert(IconKind::NfFaWarning, ("\u{f071} ", "yellow")); // 
-        icon_map.insert(IconKind::NfFaBug, ("\u{f188} ", "red")); // 
-        icon_map.insert(IconKind::NfOctDotFill, ("\u{f444} ", "white")); // 
+        i_map.insert(IconKind::NfFaTimes, ("\u{f00d} ", RED)); // 
+        i_map.insert(IconKind::NfFaCheck, ("\u{f00c} ", GREEN)); // 
+        i_map.insert(IconKind::NfFaInfoCircle, ("\u{f05a} ", WHITE)); // 
+        i_map.insert(IconKind::NfFaRefresh, ("\u{f021} ", CYAN)); // 
+        i_map.insert(IconKind::NfFaWarning, ("\u{f071} ", YELLOW)); // 
+        i_map.insert(IconKind::NfFaBug, ("\u{f188} ", RED)); // 
+        i_map.insert(IconKind::NfOctDotFill, ("\u{f444} ", WHITE)); // 
+        i_map.insert(IconKind::NfMdGreaterThan, ("\u{f096d} ", WHITE)); // 󰥭
+        i_map.insert(IconKind::NfMdLessThan, ("\u{f097c} ", WHITE)); // 󰥼
+        i_map.insert(IconKind::NfMdEqual, ("\u{f01fc} ", WHITE)); // 󰇼
+        i_map.insert(IconKind::NfMdThumbsUp, ("\u{f0513} ", GREEN)); // 󰔓
+        i_map.insert(IconKind::NfMdThumbsDown, ("\u{f0511} ", RED)); // 󰔑
+        i_map.insert(IconKind::NfMdFolder, ("\u{f024b} ", WHITE)); // 󰉋
+        i_map.insert(IconKind::NfMdFolderOpen, ("\u{f0770} ", WHITE)); // 󰝰
 
         // Unicode icons
-        icon_map.insert(IconKind::UnicodeCrossMark, ("\u{274C} ", "red")); // ❌
-        icon_map.insert(IconKind::UnicodeCheckMark, ("\u{2714}\u{FE0F} ", "green")); // ✔️
-        icon_map.insert(
-            IconKind::UnicodeInformationSource,
-            ("\u{2139}\u{FE0F} ", "white"),
-        ); // ℹ️
-        icon_map.insert(IconKind::UnicodeGear, ("\u{2699}\u{FE0F} ", "cyan")); // ⚙️
-        icon_map.insert(
-            IconKind::UnicodeWarningSign,
-            ("\u{26A0}\u{FE0F} ", "yellow"),
-        ); // ⚠️
-        icon_map.insert(IconKind::UnicodeBug, ("\u{1F41B} ", "red")); // 🐛
+        #[rustfmt::skip]
+        i_map.insert(IconKind::UnicodeInformationSource, ("\u{2139}\u{fe0f} ", WHITE)); // ℹ️
+        i_map.insert(IconKind::UnicodeGear, ("\u{2699}\u{FE0F} ", CYAN)); // ⚙️
+        i_map.insert(IconKind::UnicodeWarningSign, ("\u{26A0}\u{FE0F} ", YELLOW)); // ⚠️
+        i_map.insert(IconKind::UnicodeBug, ("\u{1F41B} ", RED)); // 🐛
+        i_map.insert(IconKind::UnicodeCrossMark, ("\u{274C} ", RED)); // ❌
+        i_map.insert(IconKind::UnicodeCheckMark, ("\u{2714}\u{FE0F} ", GREEN)); // ✔️
 
-        Mutex::new(icon_map)
+        Mutex::new(i_map)
     });
 
 #[cfg(test)]
