@@ -582,7 +582,7 @@ impl Whisper {
     /// }
     /// ```
     #[cfg(feature = "experimental")]
-    pub fn whisper_with_fallback<F: FnOnce()>(self, fallback: F) -> Result<(), WhisperError> {
+    pub fn whisper_or_else<F: FnOnce()>(self, fallback: F) -> Result<(), WhisperError> {
         if self.whisper().is_err() {
             fallback();
         }
