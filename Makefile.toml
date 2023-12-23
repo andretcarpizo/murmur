@@ -61,7 +61,7 @@ command = "git"
 args = [
     "commit",
     "-m",
-    "Release: v${VERSION}",
+    "Release v${VERSION}",
 ]
 command = "git"
 
