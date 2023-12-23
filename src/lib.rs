@@ -588,19 +588,20 @@ impl Whisper {
     ///
     #[cfg(feature = "experimental")]
     pub fn whisper_or_else<F: FnOnce()>(self, fallback: F) -> Result<(), WhisperError> {
-        match self.whisper() {
-            Ok(()) => Ok(()),
-            Err(e) => {
-                fallback();
-                Err(e)
-            }
+        if self.whisper().is_err() {
+            fallback();
         }
+        Ok(())
     }
+
     // pub fn whisper_or_else<F: FnOnce()>(self, fallback: F) -> Result<(), WhisperError> {
-    //     if self.whisper().is_err() {
-    //         fallback();
+    //     match self.whisper() {
+    //         Ok(()) => Ok(()),
+    //         Err(e) => {
+    //             fallback();
+    //             Err()
+    //         }
     //     }
-    //     Ok(())
     // }
 
     /// Prints messages with a specific color and an optional icon prefix.
