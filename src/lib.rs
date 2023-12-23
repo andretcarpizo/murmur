@@ -556,54 +556,6 @@ impl Whisper {
         Ok(())
     }
 
-    /// This method attempts to call the `whisper()` method on `self`.
-    /// If `whisper()` returns an error, the `fallback()` function is called.
-    ///
-    /// # Arguments
-    ///
-    /// * `fallback`: A function to be called if `whisper()` returns an error. The function should take no arguments and return no value.
-    ///
-    /// # Returns
-    ///
-    /// Returns `Ok(())` if `whisper()` does not return an error or if the fallback function is called successfully.
-    /// Otherwise, returns an `Err` variant of `WhisperError`.
-    ///
-    /// # Example
-    ///
-    /// ```no_run
-    /// # use my_crate::MyStruct;
-    /// # use std::io::Error;
-    ///
-    /// # #[cfg(feature = "experimental")]
-    /// # fn main() -> Result<(), Error> {
-    ///     let my_struct = MyStruct::new();
-    ///     my_struct.whisper_or_else(|| println!("Fallback function called"));
-    ///
-    ///     Ok(())
-    /// # }
-    ///
-    ///
-    /// ```
-    /// # Errors
-    ///
-    #[cfg(feature = "experimental")]
-    pub fn whisper_or_else<F: FnOnce()>(self, fallback: F) -> Result<(), WhisperError> {
-        if self.whisper().is_err() {
-            fallback();
-        }
-        Ok(())
-    }
-
-    // pub fn whisper_or_else<F: FnOnce()>(self, fallback: F) -> Result<(), WhisperError> {
-    //     match self.whisper() {
-    //         Ok(()) => Ok(()),
-    //         Err(e) => {
-    //             fallback();
-    //             Err()
-    //         }
-    //     }
-    // }
-
     /// Prints messages with a specific color and an optional icon prefix.
     ///
     /// This function is responsible for printing each message in the `Whisper` instance with a specific color and an optional icon prefix.
