@@ -556,38 +556,52 @@ impl Whisper {
         Ok(())
     }
 
-    /// Executes a whisper operation with a fallback function.
-    ///
-    /// This function is only available when the `experimental` feature is enabled.
+    /// This method attempts to call the `whisper()` method on `self`.
+    /// If `whisper()` returns an error, the `fallback()` function is called.
     ///
     /// # Arguments
     ///
-    /// - `fallback`: A function that will be executed if the whisper operation fails.
+    /// * `fallback`: A function to be called if `whisper()` returns an error. The function should take no arguments and return no value.
     ///
+    /// # Returns
+    ///
+    /// Returns `Ok(())` if `whisper()` does not return an error or if the fallback function is called successfully.
+    /// Otherwise, returns an `Err` variant of `WhisperError`.
+    ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// # use my_crate::MyStruct;
+    /// # use std::io::Error;
+    ///
+    /// # #[cfg(feature = "experimental")]
+    /// # fn main() -> Result<(), Error> {
+    ///     let my_struct = MyStruct::new();
+    ///     my_struct.whisper_or_else(|| println!("Fallback function called"));
+    ///
+    ///     Ok(())
+    /// # }
+    ///
+    ///
+    /// ```
     /// # Errors
     ///
-    /// Returns an `Err` variant of `WhisperError` if the whisper operation fails.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// #[cfg(feature = "experimental")]
-    /// {
-    ///     let result = whisperer.whisper_with_fallback(|| {
-    ///         // Fallback logic
-    ///     });
-    ///     if let Err(error) = result {
-    ///         println!("Failed to perform whisper operation: {:?}", error);
-    ///     }
-    /// }
-    /// ```
     #[cfg(feature = "experimental")]
     pub fn whisper_or_else<F: FnOnce()>(self, fallback: F) -> Result<(), WhisperError> {
-        if self.whisper().is_err() {
-            fallback();
+        match self.whisper() {
+            Ok(()) => Ok(()),
+            Err(e) => {
+                fallback();
+                Err(e)
+            }
         }
-        Ok(())
     }
+    // pub fn whisper_or_else<F: FnOnce()>(self, fallback: F) -> Result<(), WhisperError> {
+    //     if self.whisper().is_err() {
+    //         fallback();
+    //     }
+    //     Ok(())
+    // }
 
     /// Prints messages with a specific color and an optional icon prefix.
     ///

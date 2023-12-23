@@ -2,6 +2,7 @@
 ## [Unreleased] - 2023-12-23
 
 ### Changed
+- Rename: to whisper_or_else
 - Update: makefile
 
 ### Added
