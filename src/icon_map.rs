@@ -114,6 +114,8 @@ pub static ICON_MAP: Lazy<Mutex<HashMap<IconKind, (&'static str, &'static str)>>
 
         i_map.insert(IconKind::NfOctDotFill, ("\u{f444} ", WHITE)); // 
 
+        // Deprecate NfMd variants
+        // Todo: Replace with equivalenf NfFa variants
         i_map.insert(IconKind::NfMdGreaterThan, ("\u{f096d} ", WHITE)); // 󰥭
         i_map.insert(IconKind::NfMdLessThan, ("\u{f097c} ", WHITE)); // 󰥼
         i_map.insert(IconKind::NfMdEqual, ("\u{f01fc} ", WHITE)); // 󰇼
