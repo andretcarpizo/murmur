@@ -556,6 +556,39 @@ impl Whisper {
         Ok(())
     }
 
+    /// Executes a whisper operation with a fallback function.
+    ///
+    /// This function is only available when the `experimental` feature is enabled.
+    ///
+    /// # Arguments
+    ///
+    /// - `fallback`: A function that will be executed if the whisper operation fails.
+    ///
+    /// # Errors
+    ///
+    /// Returns an `Err` variant of `WhisperError` if the whisper operation fails.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// #[cfg(feature = "experimental")]
+    /// {
+    ///     let result = whisperer.whisper_with_fallback(|| {
+    ///         // Fallback logic
+    ///     });
+    ///     if let Err(error) = result {
+    ///         println!("Failed to perform whisper operation: {:?}", error);
+    ///     }
+    /// }
+    /// ```
+    #[cfg(feature = "experimental")]
+    pub fn whisper_with_fallback<F: FnOnce()>(self, fallback: F) -> Result<(), WhisperError> {
+        if self.whisper().is_err() {
+            fallback();
+        }
+        Ok(())
+    }
+
     /// Prints messages with a specific color and an optional icon prefix.
     ///
     /// This function is responsible for printing each message in the `Whisper` instance with a specific color and an optional icon prefix.
