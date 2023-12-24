@@ -6,11 +6,10 @@
 [![GitHub Actions](https://github.com/andretcarpizo/murmur/actions/workflows/rust.yml/badge.svg)](https://github.com/andretcarpizo/murmur/actions)
 [![License](https://img.shields.io/crates/l/murmur.svg)](https://github.com/andretcarpizo/murmur/blob/main/LICENSE.md)
 
-
-This library provides a simple and flexible way to format colored messages with optional `NerdFonts` or `Unicode` icons.
+A flexible library to build messages with  `NerdFonts` or `Unicode` icons.
 
 Table of Contents
-1. [Usage](#usage)
+1. [Introduction](#Introduction)
 2. [`IconKind` Variants](#iconkind-variants)
 3. [`Whisper` Methods](#whisper-methods)
    - [`new()`](#new)
@@ -19,11 +18,9 @@ Table of Contents
    - [`messages()`](#messages)
    - [`whisper()`](#whisper)
 4. [`WhisperError`](#whispererror)
-5. Examples
-    - [Handling Errors with Default Methods](#handling-errors-with-default-methods)
-    - [Custom Error Handling](#customizing-error-handling)
+5. [Examples](https://github.com/andretcarpizo/murmur/tree/main/examples)
 
-### Usage
+### Introduction
 
 There is only a `Whisper` struct and an `IconKind` enum.
 
@@ -121,8 +118,8 @@ Output:
 
 ```
 1 message without icon
-2 message without icon indents by 2 spaces all messages after the first
-3 message
+  2 message without icon indents by 2 spaces all messages after the first
+  3 message
 ```
 
 #### messages
