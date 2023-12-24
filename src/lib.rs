@@ -48,7 +48,7 @@
 //! - `UnicodeBug`
 //!
 //!
-//!  For a full list of the currently supported icons, see the `IconKind` enum.
+//!  For a full list of the currently supported icons, see the `IconKind` [enum](https://docs.rs/murmur/1.2.1/murmur/enum.IconKind.htmlhttps://docs.rs/murmur/1.2.1/murmur/enum.IconKind.html).
 //! ```rust
 //! use murmur::{Whisper, IconKind};
 //! use owo_colors::OwoColorize;
