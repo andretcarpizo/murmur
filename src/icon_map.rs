@@ -5,6 +5,8 @@
 //!
 //! The `IconKind` enum represents different kinds of icons for formatting messages. It supports both Unicode or Nerd Font icons if you have a Nerd Font installed.
 //!
+#![allow(deprecated)]
+
 use enum_iterator::Sequence;
 use once_cell::sync::Lazy;
 use std::fmt;
@@ -24,7 +26,7 @@ use std::{collections::HashMap, sync::Mutex};
 /// ```
 ///
 /// You must have [NerdFonts](https://www.nerdfonts.com/) installed to use the `Nf` variants.
-/// - [Nerfonts github](https://github.com/ryanoasis/nerd-fonts?tab=readme-ov-files)
+/// - [NerdFonts github](https://github.com/ryanoasis/nerd-fonts?tab=readme-ov-files)
 /// - [NerdFonts cheat-sheet](https://www.nerdfonts.com/cheat-sheet)
 #[derive(Debug, Clone, Eq, PartialEq, Hash, Sequence)]
 pub enum IconKind {
@@ -38,22 +40,33 @@ pub enum IconKind {
     NfFaQuestionCircle,
     NfFaTerminal,
     NfFaTrash,
+
     NfFaAngleRight,
     NfFaAngleLeft,
     NfFaAngleUp,
     NfFaAngleDown,
     NfFaThumbsUp,
     NfFaThumbsDown,
+    NfFaFolder,
+    NfFaFolderOpen,
     NfFaeCcCc,
+    NfFaeEqual,
 
     NfOctDotFill,
 
+    #[deprecated(since = "1.2.1", note = "Use NfFaAngleRight instead")]
     NfMdGreaterThan,
+    #[deprecated(since = "1.2.1", note = "Use NfFaAngleLeft instead")]
     NfMdLessThan,
+    #[deprecated(since = "1.2.1", note = "Use NfFaeEqual instead")]
     NfMdEqual,
+    #[deprecated(since = "1.2.1", note = "Use NfFaThumbsUp instead")]
     NfMdThumbsUp,
+    #[deprecated(since = "1.2.1", note = "Use NfFaThumbsDown instead")]
     NfMdThumbsDown,
+    #[deprecated(since = "1.2.1", note = "Use NfFaFolder instead")]
     NfMdFolder,
+    #[deprecated(since = "1.2.1", note = "Use NfFaFolderOpen instead")]
     NfMdFolderOpen,
 
     UnicodeCrossMark,
@@ -93,7 +106,8 @@ const CYAN: &str = "cyan";
 pub static ICON_MAP: Lazy<Mutex<HashMap<IconKind, (&'static str, &'static str)>>> =
     Lazy::new(|| {
         let mut i_map = HashMap::new();
-        // Nerd Font icons
+
+        // Nerd Font Font Awesome icons
         i_map.insert(IconKind::NfFaTimes, ("\u{f00d} ", RED)); // 
         i_map.insert(IconKind::NfFaCheck, ("\u{f00c} ", GREEN)); // 
         i_map.insert(IconKind::NfFaInfoCircle, ("\u{f05a} ", WHITE)); // 
@@ -110,12 +124,17 @@ pub static ICON_MAP: Lazy<Mutex<HashMap<IconKind, (&'static str, &'static str)>>
         i_map.insert(IconKind::NfFaAngleDown, ("\u{f107} ", WHITE)); // 
         i_map.insert(IconKind::NfFaThumbsUp, ("\u{f164} ", GREEN)); // 
         i_map.insert(IconKind::NfFaThumbsDown, ("\u{f165} ", RED)); // 
-        i_map.insert(IconKind::NfFaeCcCc, ("\u{e291} ", WHITE)); // 
+        i_map.insert(IconKind::NfFaFolder, ("\u{f07b} ", WHITE)); // 
+        i_map.insert(IconKind::NfFaFolderOpen, ("\u{f07c} ", WHITE)); // 
 
+        // Nerd Font Font Awesome Extension icons
+        i_map.insert(IconKind::NfFaeCcCc, ("\u{e291} ", WHITE)); // 
+        i_map.insert(IconKind::NfFaeEqual, ("\u{e279} ", WHITE)); // 
+
+        // Nerd Font Oct-icons
         i_map.insert(IconKind::NfOctDotFill, ("\u{f444} ", WHITE)); // 
 
-        // Deprecate NfMd variants
-        // Todo: Replace with equivalenf NfFa variants
+        // Deprecated NfMd variants
         i_map.insert(IconKind::NfMdGreaterThan, ("\u{f096d} ", WHITE)); // 󰥭
         i_map.insert(IconKind::NfMdLessThan, ("\u{f097c} ", WHITE)); // 󰥼
         i_map.insert(IconKind::NfMdEqual, ("\u{f01fc} ", WHITE)); // 󰇼
