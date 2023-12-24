@@ -135,7 +135,7 @@
 //!     .whisper()
 //!     .ok();
 //! ```
-//! ### `WhisperError`
+//!`WhisperError`
 //!
 //! The `whisper` method returns  `-> Result<(), WhisperError>`
 //!
@@ -468,7 +468,6 @@ impl Whisper {
         let mut writer = BufWriter::with_capacity(BUFFER_SIZE, stdout.lock());
 
         if let Some(color_fn) = color_map::COLOR_MAP.get(color) {
-            let color_fn = color_fn.lock().map_err(|_| WhisperError::Lock)?;
             writeln!(writer, "{}{}", color_fn(prefix), color_fn(message))
                 .map_err(|_| WhisperError::Write)?;
         } else {
