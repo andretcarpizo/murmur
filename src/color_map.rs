@@ -12,7 +12,7 @@ use std::collections::HashMap;
 type ColorFn = fn(&str) -> String;
 
 /// A tuple type that represents a color.
-type Color = (&'static str, ColorFn); // Define a tuple type that represents a color.
+type Color = (&'static str, ColorFn);
 
 /// A type alias for a boxed function that takes a `&str` and returns a `String`.
 type ColorFunction = Box<dyn Fn(&str) -> String + Send + Sync>;

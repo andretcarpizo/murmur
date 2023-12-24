@@ -179,6 +179,9 @@ pub enum WhisperError {
 
     /// Error flushing buffer
     Flush,
+
+    /// Error converting bytes to UTF-8 string
+    Utf8Conversion,
 }
 
 impl Display for WhisperError {
@@ -188,6 +191,7 @@ impl Display for WhisperError {
             Self::Print => write!(f, "Failed to print message"),
             Self::Write => write!(f, "Error writing to buffer"),
             Self::Flush => write!(f, "Error flushing buffer"),
+            Self::Utf8Conversion => write!(f, "Failed to convert bytes to UTF-8 string"),
         }
     }
 }
@@ -398,6 +402,72 @@ impl Whisper {
         Ok(())
     }
 
+    /// Writes the output of a process as a whisper.
+    ///
+    /// This function is only available when the `experimental` feature is enabled.
+    /// It takes a reference to the output of a process and converts it to a UTF-8 string.
+    /// Then, it creates a `Whisper` instance with the extracted message and invokes the
+    /// `whisper` method to perform the whispering process.
+    ///
+    /// # Arguments
+    ///
+    /// * `output` - The output of a process as a `std::process::Output` reference.
+    ///
+    /// # Returns
+    ///
+    /// Returns `Ok(())` if the whispering process is successful, otherwise returns a `WhisperError`.
+    ///
+    /// # Errors
+    ///
+    /// The function may return a `WhisperError` if:
+    ///
+    /// * The conversion from the output to a UTF-8 string fails.
+    /// * The whispering process fails.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    ///
+    /// ```
+    #[cfg(feature = "experimental")]
+    pub fn whisper_out(self, output: &std::process::Output) -> Result<(), WhisperError> {
+        let message =
+            std::str::from_utf8(&output.stdout).map_err(|_| WhisperError::Utf8Conversion)?;
+        let whisper = self.message(message);
+        whisper.whisper()?;
+        Ok(())
+    }
+
+    /// This function is used to handle error messages from a process output and send them as whispers.
+    /// It is only available when the "experimental" feature is enabled.
+    ///
+    /// # Arguments
+    ///
+    /// * `output` - Process output that contains the error message.
+    ///
+    /// # Returns
+    ///
+    /// This function returns a `Result<(), WhisperError>`. If the conversion from `stderr` to a string fails,
+    /// an `Utf8Conversion` variant of `WhisperError` is returned. Otherwise, the message is sent as a whisper
+    /// and the function returns `Ok()`.
+    ///
+    /// # Example
+    ///
+    /// ```
+    ///
+    /// ```
+    ///
+    /// # Errors
+    ///
+    #[cfg(feature = "experimental")]
+    pub fn whisper_err(self, output: &std::process::Output) -> Result<(), WhisperError> {
+        let message =
+            std::str::from_utf8(&output.stderr).map_err(|_| WhisperError::Utf8Conversion)?;
+        let whisper = self.message(message);
+        whisper.whisper()?;
+        Ok(())
+    }
+
     /// Prints messages with a specific color and an optional icon prefix.
     ///
     /// This function is responsible for printing each message in the `Whisper` instance with a specific color and an optional icon prefix.
@@ -475,6 +545,33 @@ impl Whisper {
         }
 
         writer.flush().map_err(|_| WhisperError::Flush)?;
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+#[cfg(feature = "experimental")]
+mod whisper_experimental {
+    use super::*;
+    use std::error::Error;
+    use std::process::Command;
+
+    //cargo test --features experimental --color=always --package murmur --lib whisper_experimental
+    #[test]
+    fn execute_cargo_version() -> Result<(), Box<dyn Error>> {
+        // Declaration and initialization of whisper
+        let success = Whisper::new().icon(IconKind::NfFaCheck);
+        let failure = Whisper::new().icon(IconKind::NfFaTimes);
+
+        // Usage of whisper in application logic
+        let output = Command::new("cargo").arg("version").output()?;
+
+        if output.status.success() {
+            success.whisper_out(&output)?;
+        } else {
+            failure.whisper_err(&output)?;
+        }
+
         Ok(())
     }
 }

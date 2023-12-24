@@ -2,10 +2,14 @@
 
 ## [Unreleased] - 2023-12-24
 
-### Breaking Changes
-- Breaking: Changes NfMd Variants are deprecated and will be replaced by their equivalent NfFa Variant in the next release
+### Removed
+- Remove: mutex lock on color_fn
+- Remove: whisper_or_else
 
 ### Changed
+- Refactor: simplifies color map implementation
+- Replace: Arc and Mutex with Box in ColorFunction
+- Update: changelog
 - Update: changelog
 - Update: README.md content and structure
 - Update: icon_map.rs deprecate NfMd icon variants and replace with NfFa equivalents
@@ -13,6 +17,11 @@
 - Change: whisper_or_else fallback err
 - Rename: to whisper_or_else
 - Update: makefile
+
+### Added
+- Add: non_exhaustive attribute to IconKind enumeration
+- Add: examples folder
+- Add: whisper_with_fallback method experimental
 
 ### Other
 - 2023-12-24 10: 12:04
@@ -22,20 +31,15 @@
 - 2023-12-23 07: 57:58
 - 2023-12-22 04: 54:11
 
-### Configuration
-- Allow: deprecated code in Cargo.toml lints settings.
-
 ### Documentation
 - #![doc(html_root_url = "https: //docs.rs/murmur/")]
 - Update: lib.rs documentation structure
 - Update: `IconKind` enum link in documentation
 - Refactor: some crate docs to example .
 
-### Removed
-- Remove: whisper_or_else
+### Configuration
+- Allow: deprecated code in Cargo.toml lints settings.
 
-### Added
-- Add: non_exhaustive attribute to IconKind enumeration
-- Add: examples folder
-- Add: whisper_with_fallback method experimental
+### Breaking Changes
+- Breaking: Changes NfMd Variants are deprecated and will be replaced by their equivalent NfFa Variant in the next release
 
