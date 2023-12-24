@@ -2,6 +2,9 @@
 
 ## [Unreleased] - 2023-12-24
 
+### Configuration
+- Allow: deprecated code in Cargo.toml lints settings.
+
 ### Documentation
 - #![doc(html_root_url = "https: //docs.rs/murmur/")]
 - Update: lib.rs documentation structure
@@ -9,18 +12,23 @@
 - Refactor: some crate docs to example .
 
 ### Other
+- 2023-12-24 10: 12:04
 - 2023-12-24 09: 56:37
 - 2023-12-23 16: 27:45
 - 2023-12-23 16: 13:43
 - 2023-12-23 07: 57:58
 - 2023-12-22 04: 54:11
 
-### Breaking Changes
-- Breaking: Changes NfMd Variants are deprecated and will be replaced by their equivalent NfFa Variant in the next release
-
 ### Added
+- Add: non_exhaustive attribute to IconKind enumeration
 - Add: examples folder
 - Add: whisper_with_fallback method experimental
+
+### Removed
+- Remove: whisper_or_else
+
+### Breaking Changes
+- Breaking: Changes NfMd Variants are deprecated and will be replaced by their equivalent NfFa Variant in the next release
 
 ### Changed
 - Update: README.md content and structure
@@ -29,10 +37,4 @@
 - Change: whisper_or_else fallback err
 - Rename: to whisper_or_else
 - Update: makefile
-
-### Configuration
-- Allow: deprecated code in Cargo.toml lints settings.
-
-### Removed
-- Remove: whisper_or_else
 

@@ -6,16 +6,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased] - 2023-12-23
 
-### Breaking Changes
-NfMd Variants are deprecated and will be replaced by their equivalent NfFa Variant in the next release
-- NfMdGreaterThan
-- NfMdLessThan
-- NfMdEqual
-- NfMdThumbsUp
-- NfMdThumbsDown
-- NfMdFolder
-- NfMdFolderOpen
+### Added
+  - IconKind::
+    -  NfFaFolder
+    -  NfFaFolderOpen
+    -  NfFaeEqual
 
+### Breaking Changes
+- NfMd Variants are deprecated and will be replaced by their equivalent NfFa Variant in the next release
+  - NfMdGreaterThan
+  - NfMdLessThan
+  - NfMdEqual
+  - NfMdThumbsUp
+  - NfMdThumbsDown
+  - NfMdFolder
+  - NfMdFolderOpen
+
+- Add: non_exhaustive attribute to IconKind enumeration
 
 ## [1.2.1] - 2023-12-22
 
