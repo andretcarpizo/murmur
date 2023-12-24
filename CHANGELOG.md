@@ -22,7 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   - NfMdFolder
   - NfMdFolderOpen
 
-- Add: non_exhaustive attribute to IconKind enumeration
+- Add: IconKind enum has been marked #[non_exhaustive]. 
+  - Pattern-matching on it outside of its crate must now include a wildcard pattern like `_`, or it will fail to compile.
 
 ## [1.2.1] - 2023-12-22
 
