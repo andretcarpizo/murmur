@@ -28,6 +28,7 @@ use std::{collections::HashMap, sync::Mutex};
 /// You must have [NerdFonts](https://www.nerdfonts.com/) installed to use the `Nf` variants.
 /// - [NerdFonts github](https://github.com/ryanoasis/nerd-fonts?tab=readme-ov-files)
 /// - [NerdFonts cheat-sheet](https://www.nerdfonts.com/cheat-sheet)
+#[non_exhaustive]
 #[derive(Debug, Clone, Eq, PartialEq, Hash, Sequence)]
 pub enum IconKind {
     NfFaTimes,
