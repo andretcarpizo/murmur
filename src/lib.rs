@@ -154,7 +154,7 @@
 //! }
 //!```
 
-#![doc(html_root_url = "https://docs.rs/murmur/1.2.1/murmur/")]
+#![doc(html_root_url = "https://docs.rs/murmur/")]
 mod color_map;
 mod icon_map;
 
