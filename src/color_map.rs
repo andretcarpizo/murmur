@@ -8,70 +8,34 @@ use once_cell::sync::Lazy;
 use owo_colors::OwoColorize;
 use std::collections::HashMap;
 
-/// `ColorFunction` is a type alias for a trait object that represents a function which takes a string slice as input
-/// and returns a string. This function is used to apply a color to the given string.
-///
-/// The `Box<dyn Fn(&str) -> String + Send + Sync>` syntax indicates that the trait object is owned by a `Box`,
-/// and it can be dynamically dispatched to any type that implements `Fn(&str) -> String` trait. The `Send` and `Sync`
-/// bounds ensure that the trait object can be safely sent between threads and shared across them.
-///
-/// Example usage:
-/// ```
-/// use std::boxed::Box;
-///
-/// type ColorFunction = Box<dyn Fn(&str) -> String + Send + Sync>;
-///
-/// fn apply_color(color_fn: &ColorFunction, text: &str) -> String {
-///     color_fn(text)
-/// }
-///
-/// fn main() {
-///     let color_fn: ColorFunction = Box::new(|text| format!("\x1B[31m{}\x1B[0m", text));
-///     let colored_text = apply_color(&color_fn, "Hello world!");
-///     println!("{}", colored_text);
-/// }
-/// ```
-/// In this example, `ColorFunction` is used to represent a function that applies red color to a given string. The function
-/// `apply_color` takes a reference to a `ColorFunction` and a string slice, and applies the color function to the text,
-/// returning the colored string. Finally, the colored text is printed to the console.
-///
+/// A type alias for a function that takes a `&str` and returns a `String`.
+type ColorFn = fn(&str) -> String;
+
+/// A tuple type that represents a color.
+type Color = (&'static str, ColorFn); // Define a tuple type that represents a color.
+
+/// A type alias for a boxed function that takes a `&str` and returns a `String`.
 type ColorFunction = Box<dyn Fn(&str) -> String + Send + Sync>;
 
-/// `ColorMapType` is a type alias for a `HashMap` where the key is a static string slice representing the color name,
-/// and the value is a `ColorFunction` which applies the corresponding color to a given string.
+/// A type alias for a `HashMap` that maps color names to color functions.
 type ColorMapType = HashMap<&'static str, ColorFunction>;
 
-/// Creates a `ColorFunction` from a closure.
-///
-/// The closure `f` takes a reference to a `str` and returns a `String`.
-/// The closure must be `'static`, meaning it has no references to local data.
-/// The closure must be both `Send` and `Sync`, allowing it to be safely shared
-/// between multiple threads.
-///
-/// # Arguments
-///
-/// * `f` - The closure that transforms a `str` into a `String`.
-///
-/// # Returns
-///
-/// A `ColorFunction` that wraps the provided closure.
-fn create_color<F>(f: F) -> ColorFunction
-where
-    F: 'static + Fn(&str) -> String + Send + Sync,
-{
-    // Arc::new(Mutex::new(f))
-    Box::new(f)
-}
+/// A `Lazy` static `HashMap` that maps color names to color functions.
+const COLORS: [Color; 5] = [
+    ("red", |text: &str| text.red().to_string()),
+    ("green", |text: &str| text.green().to_string()),
+    ("white", |text: &str| text.white().to_string()),
+    ("cyan", |text: &str| text.cyan().to_string()),
+    ("yellow", |text: &str| text.yellow().to_string()),
+];
 
-/// A static `COLOR_MAP` that maps color names to color functions.
+/// A `Lazy` static `HashMap` that maps color names to color functions.
 #[rustfmt::skip]
 pub static COLOR_MAP: Lazy<ColorMapType> = Lazy::new(|| {
     let mut map: ColorMapType = HashMap::new();
-    map.insert("red", create_color(|text: &str| text.red().to_string()));
-    map.insert("green", create_color(|text: &str| text.green().to_string()));
-    map.insert("white", create_color(|text: &str| text.white().to_string()));
-    map.insert("cyan", create_color(|text: &str| text.cyan().to_string()));
-    map.insert("yellow", create_color(|text: &str| text.yellow().to_string()));
+    for &color in &COLORS {
+        map.insert(color.0, Box::new(color.1));
+    }
     map
 });
 
