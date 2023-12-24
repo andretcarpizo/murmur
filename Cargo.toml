@@ -26,6 +26,8 @@ experimental = []
 
 [lints.rust]
 unsafe_code = "forbid"
+deprecated = "allow"
+
 
 [lints.clippy]
 missing_docs_in_private_items = "deny"
@@ -47,6 +49,7 @@ missing_const_for_fn = "allow"
 exhaustive_enums = "allow"
 pub_use = "allow"
 question_mark = "allow"
+
 
 
 
