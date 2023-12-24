@@ -574,6 +574,45 @@ mod whisper_experimental {
 
         Ok(())
     }
+
+    #[test]
+    #[allow(clippy::match_bool)]
+    fn execute_cargo_version_whisper_error() -> Result<(), WhisperError> {
+        // Declaration and initialization of whisper
+        let check = Whisper::new().icon(IconKind::NfFaCheck);
+        let times = Whisper::new().icon(IconKind::NfFaTimes);
+
+        // Usage of whisper in application logic
+        let output = Command::new("cargo")
+            .arg("version")
+            .output()
+            .map_err(|_| WhisperError::Print)?;
+
+        match output.status.success() {
+            true => check.whisper_out(&output)?,
+            false => times.whisper_err(&output)?,
+        }
+
+        Ok(())
+    }
+
+    #[test]
+    #[allow(clippy::match_bool)]
+    fn execute_cargo_version_box_dyn() -> Result<(), Box<dyn Error>> {
+        // Declaration and initialization of whisper
+        let check = Whisper::new().icon(IconKind::NfFaCheck);
+        let times = Whisper::new().icon(IconKind::NfFaTimes);
+
+        // Usage of whisper in application logic
+        let output = Command::new("cargo").arg("version").output()?;
+
+        match output.status.success() {
+            true => check.whisper_out(&output)?,
+            false => times.whisper_err(&output)?,
+        }
+
+        Ok(())
+    }
 }
 
 #[cfg(test)]
