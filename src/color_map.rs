@@ -8,17 +8,14 @@ use once_cell::sync::Lazy;
 use owo_colors::OwoColorize;
 use std::collections::HashMap;
 
-/// A type alias for a function that takes a `&str` and returns a `String`.
-type ColorFn = fn(&str) -> String;
-
-/// A tuple type that represents a color.
-type Color = (&'static str, ColorFn);
-
 /// A type alias for a boxed function that takes a `&str` and returns a `String`.
-type ColorFunction = Box<dyn Fn(&str) -> String + Send + Sync>;
+type ColorFn = Box<dyn Fn(&str) -> String + Send + Sync>;
 
 /// A type alias for a `HashMap` that maps color names to color functions.
-type ColorMapType = HashMap<&'static str, ColorFunction>;
+type ColorMapType = HashMap<&'static str, ColorFn>;
+
+/// A tuple type that represents a color.
+type Color = (&'static str, fn(&str) -> String);
 
 /// A `Lazy` static `HashMap` that maps color names to color functions.
 const COLORS: [Color; 5] = [
