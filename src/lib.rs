@@ -167,6 +167,7 @@ use std::io::{self, BufWriter, Write};
 
 /// The `WhisperError` enum represents different kinds of errors that can occur while printing messages.
 #[derive(Debug)]
+#[non_exhaustive]
 pub enum WhisperError {
     /// Error acquiring lock on ICON_MAP
     Lock,
