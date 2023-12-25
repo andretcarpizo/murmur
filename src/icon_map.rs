@@ -6,7 +6,6 @@
 //! The `IconKind` enum represents different kinds of icons for formatting messages. It supports both Unicode or Nerd Font icons if you have a Nerd Font installed.
 //!
 #![allow(deprecated)]
-
 use enum_iterator::Sequence;
 use once_cell::sync::Lazy;
 use std::fmt;
@@ -81,7 +80,11 @@ pub enum IconKind {
 /// Implement the `Display` trait for `IconKind`.
 impl fmt::Display for IconKind {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{self:?}")
+        if let Some((icon, _)) = ICON_MAP.lock().unwrap().get(self) {
+            write!(f, "{icon}")
+        } else {
+            write!(f, "Icon not found")
+        }
     }
 }
 
