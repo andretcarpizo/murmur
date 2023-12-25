@@ -8,8 +8,9 @@
 #![allow(deprecated)]
 use enum_iterator::Sequence;
 use once_cell::sync::Lazy;
+use std::collections::HashMap;
 use std::fmt;
-use std::{collections::HashMap, sync::Mutex};
+use std::sync::RwLock;
 
 /// `IconKind` is an enum representing different kinds of icons for formatting messages.
 ///
@@ -77,10 +78,9 @@ pub enum IconKind {
     UnicodeBug,
 }
 
-/// Implement the `Display` trait for `IconKind`.
 impl fmt::Display for IconKind {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        if let Some((icon, _)) = ICON_MAP.lock().unwrap().get(self) {
+        if let Some((icon, _)) = ICON_MAP.read().unwrap().get(self) {
             write!(f, "{icon}")
         } else {
             write!(f, "Icon not found")
@@ -99,6 +99,8 @@ const YELLOW: &str = "yellow";
 /// Cyan color.
 const CYAN: &str = "cyan";
 
+// pub static ICON_MAP: Lazy<Mutex<HashMap<IconKind, (&'static str, &'static str)>>>
+
 /// A static `ICON_MAP` that maps `IconKind` to a tuple of icon and color.
 ///
 /// This map is lazily initialized and thread-safe. It contains mappings for both `NerdFont` and Unicode icons.
@@ -107,7 +109,7 @@ const CYAN: &str = "cyan";
 /// The `ICON_MAP` is used by the `Whisper` struct to look up the icon and color based on the `IconKind`.
 ///
 /// If the `tracing` feature is enabled, an informational message will be logged when the `ICON_MAP` is initialized.
-pub static ICON_MAP: Lazy<Mutex<HashMap<IconKind, (&'static str, &'static str)>>> =
+pub static ICON_MAP: Lazy<RwLock<HashMap<IconKind, (&'static str, &'static str)>>> =
     Lazy::new(|| {
         let mut i_map = HashMap::new();
 
@@ -156,7 +158,7 @@ pub static ICON_MAP: Lazy<Mutex<HashMap<IconKind, (&'static str, &'static str)>>
         i_map.insert(IconKind::UnicodeCrossMark, ("\u{274C} ", RED)); // ❌
         i_map.insert(IconKind::UnicodeCheckMark, ("\u{2714}\u{FE0F} ", GREEN)); // ✔️
 
-        Mutex::new(i_map)
+        RwLock::new(i_map)
     });
 
 #[cfg(test)]
@@ -205,7 +207,7 @@ mod icon_map_tests {
                 println!(
                     "{}: {}",
                     icon_kind,
-                    ICON_MAP.lock().unwrap().get(icon_kind).unwrap().0
+                    ICON_MAP.read().unwrap().get(icon_kind).unwrap().0
                 );
             });
     }
@@ -219,7 +221,7 @@ mod icon_map_tests {
                 #[rustfmt::skip]
                 Whisper::new()
                     .icon(icon_kind.clone())
-                    .message(format!("{}: {}", icon_kind, ICON_MAP.lock().unwrap().get(icon_kind).unwrap().0))
+                    .message(format!("{}: {}", icon_kind, ICON_MAP.read().unwrap().get(icon_kind).unwrap().0))
                     .whisper()
                     .unwrap();
             });
@@ -237,7 +239,7 @@ mod icon_map_tests {
     #[test]
     fn test_spaces_after_icons() {
         let icon_map = {
-            let guard = ICON_MAP.lock().unwrap();
+            let guard = ICON_MAP.read().unwrap();
             guard.clone()
         };
 
