@@ -388,7 +388,7 @@ impl Whisper {
     /// ```
     pub fn whisper(&self) -> Result<(), WhisperError> {
         // Try to lock the ICON_MAP for safe access in a concurrent environment
-        let icon_map = icon_map::ICON_MAP.lock().map_err(|_| WhisperError::Lock)?;
+        let icon_map = icon_map::ICON_MAP.read().map_err(|_| WhisperError::Lock)?;
 
         // Check the icon_kind field of the Whisper instance
         let (icon, color) = self.icon_kind.clone().map_or(("", ""), |icon_kind| {
