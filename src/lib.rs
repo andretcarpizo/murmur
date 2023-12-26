@@ -1,3 +1,5 @@
+//! # murmur
+//!
 //! [![GitHub](https://img.shields.io/badge/github-murmur-blue.svg)](https://github.com/andretcarpizo/murmur)
 //! [![Crates.io](https://img.shields.io/crates/v/murmur.svg)](https://crates.io/crates/murmur)
 //! [![Documentation](https://docs.rs/murmur/badge.svg)](https://docs.rs/murmur)
@@ -7,7 +9,7 @@
 //! A flexible library to build messages with  `NerdFonts` or `Unicode` icons.
 //!
 //! Table of Contents
-//! 1. [Introduction](#Introduction)
+//! 1. [Intro](#Intro)
 //! 2. [`IconKind` Variants](#iconkind-variants)
 //! 3. [`Whisper` Methods](#whisper-methods)
 //!    - [`new()`](#new)
@@ -15,10 +17,10 @@
 //!    - [`message()`](#message)
 //!    - [`messages()`](#messages)
 //!    - [`whisper()`](#whisper)
-//! 4. [`WhisperError`](#whispererror)
+//! 4. [`WhisperError`](#whisper-error)
 //! 5. [Examples](https://github.com/andretcarpizo/murmur/tree/main/examples)
 //!
-//! ## Introduction
+//! ## Intro
 //!
 //! There is only a `Whisper` struct and an `IconKind` enum.
 //!
@@ -135,15 +137,13 @@
 //!     .whisper()
 //!     .ok();
 //! ```
-//!`WhisperError`
+//! ### Whisper Error
 //!
 //! The `whisper` method returns  `-> Result<(), WhisperError>`
 //!
 //! ```rust
 //! use murmur::{Whisper, IconKind, WhisperError};
 //! use std::io::{Error, ErrorKind};
-//!
-//!
 //!
 //! fn whisper_new() -> Result<(), WhisperError> {
 //!     let whisper = Whisper::new()
