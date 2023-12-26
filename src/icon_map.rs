@@ -6,11 +6,13 @@
 //! The `IconKind` enum represents different kinds of icons for formatting messages. It supports both Unicode or Nerd Font icons if you have a Nerd Font installed.
 //!
 #![allow(deprecated)]
-use enum_iterator::Sequence;
-use once_cell::sync::Lazy;
+
 use std::collections::HashMap;
 use std::fmt;
 use std::sync::RwLock;
+
+use enum_iterator::Sequence;
+use once_cell::sync::Lazy;
 
 /// `IconKind` is an enum representing different kinds of icons for formatting messages.
 ///
@@ -54,21 +56,6 @@ pub enum IconKind {
     NfFaeEqual,
 
     NfOctDotFill,
-
-    #[deprecated(since = "1.2.1", note = "Use NfFaAngleRight instead")]
-    NfMdGreaterThan,
-    #[deprecated(since = "1.2.1", note = "Use NfFaAngleLeft instead")]
-    NfMdLessThan,
-    #[deprecated(since = "1.2.1", note = "Use NfFaeEqual instead")]
-    NfMdEqual,
-    #[deprecated(since = "1.2.1", note = "Use NfFaThumbsUp instead")]
-    NfMdThumbsUp,
-    #[deprecated(since = "1.2.1", note = "Use NfFaThumbsDown instead")]
-    NfMdThumbsDown,
-    #[deprecated(since = "1.2.1", note = "Use NfFaFolder instead")]
-    NfMdFolder,
-    #[deprecated(since = "1.2.1", note = "Use NfFaFolderOpen instead")]
-    NfMdFolderOpen,
 
     UnicodeCrossMark,
     UnicodeCheckMark,
@@ -140,15 +127,6 @@ pub static ICON_MAP: Lazy<RwLock<HashMap<IconKind, (&'static str, &'static str)>
         // Nerd Font Oct-icons
         i_map.insert(IconKind::NfOctDotFill, ("\u{f444} ", WHITE)); // 
 
-        // Deprecated NfMd variants
-        i_map.insert(IconKind::NfMdGreaterThan, ("\u{f096d} ", WHITE)); // 󰥭
-        i_map.insert(IconKind::NfMdLessThan, ("\u{f097c} ", WHITE)); // 󰥼
-        i_map.insert(IconKind::NfMdEqual, ("\u{f01fc} ", WHITE)); // 󰇼
-        i_map.insert(IconKind::NfMdThumbsUp, ("\u{f0513} ", GREEN)); // 󰔓
-        i_map.insert(IconKind::NfMdThumbsDown, ("\u{f0511} ", RED)); // 󰔑
-        i_map.insert(IconKind::NfMdFolder, ("\u{f024b} ", WHITE)); // 󰉋
-        i_map.insert(IconKind::NfMdFolderOpen, ("\u{f0770} ", WHITE)); // 󰝰
-
         // Unicode icons
         #[rustfmt::skip]
         i_map.insert(IconKind::UnicodeInformationSource, ("\u{2139}\u{fe0f} ", WHITE)); // ℹ️
@@ -163,10 +141,12 @@ pub static ICON_MAP: Lazy<RwLock<HashMap<IconKind, (&'static str, &'static str)>
 
 #[cfg(test)]
 mod icon_map_tests {
-    use super::*;
-    use crate::Whisper;
     use color_eyre::Report;
     use enum_iterator::all;
+
+    use crate::Whisper;
+
+    use super::*;
 
     #[test]
     fn test_color_eyre_install_setup() -> Result<(), Report> {
