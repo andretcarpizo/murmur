@@ -1,94 +1,77 @@
 [env]
 VERSION = "1.2.1"
 
-[tasks.cargo-build-release]
-args = [
-    "build",
-    "--release",
-]
+[tasks.cargo-fmt]
+install_crate = "rustfmt"
 command = "cargo"
+args = ["fmt"]
+
+[tasks.cargo-set-version]
+install_crate = "cargo-edit"
+command = "cargo"
+args = ["set-version", "${VERSION}"]
 
 [tasks.cargo-clean-release]
-args = [
-    "clean",
-    "--release",
-]
 command = "cargo"
+args = ["clean", "--release"]
 
 [tasks.cargo-doc]
-args = [
-    "doc",
-    "--no-deps",
-    "--document-private-items",
-]
 command = "cargo"
+args = ["doc", "--no-deps", "--document-private-items"]
 
-[tasks.cargo-edit-set-version]
-args = [
-    "set-version",
-    "${VERSION}",
-]
+[tasks.cargo-build-release]
 command = "cargo"
-install_crate = "cargo-edit"
-
-[tasks.cargo-fmt]
-args = ["fmt"]
-command = "cargo"
-install_crate = "rustfmt"
-
-[tasks.cargo-publish]
-args = ["publish"]
-command = "cargo"
-
-[tasks.gh-release]
-args = [
-    "release",
-    "create",
-    "v${VERSION}",
-    "-F",
-    "CHANGELOG.md",
-]
-command = "gh"
+args = ["build", "--release"]
 
 [tasks.git-add-all]
-args = [
-    "add",
-    "--all",
-]
 command = "git"
+args = ["add", "--all"]
 
 [tasks.git-commit]
-args = [
-    "commit",
-    "-m",
-    "Release v${VERSION}",
-]
 command = "git"
-
-[tasks.git-push]
-args = ["push"]
-command = "git"
-
-[tasks.git-push-tag]
-args = [
-    "push",
-    "origin",
-    "v${VERSION}",
-]
-command = "git"
+args = ["commit", "-m", "Release v${VERSION}"]
 
 [tasks.git-tag]
-args = [
-    "tag",
-    "v${VERSION}",
-]
 command = "git"
+args = ["tag", "v${VERSION}"]
+
+[tasks.git-push]
+command = "git"
+args = ["push"]
+
+[tasks.git-push-tag]
+command = "git"
+args = ["push", "origin", "v${VERSION}"]
+
+[tasks.gh-release]
+command = "gh"
+args = ["release", "create", "v${VERSION}", "-F", "CHANGELOG.md"]
+
+[tasks.cargo-bin]
+command = "cargo"
+args = ["bin"]
+
+[tasks.cargo-devlog-clean]
+command = "cargo"
+args = ["devlog"]
+
+[tasks.lazy]
+command = "lazy"
+
+[tasks.cargo-readme]
+command = "cargo"
+args = ["readme"]
+
+[tasks.cargo-publish]
+command = "cargo"
+args = ["publish"]
 
 [tasks.release]
 dependencies = [
     "cargo-fmt",
-    "cargo-edit-set-version",
+    "cargo-set-version",
     "cargo-clean-release",
+    "cargo-readme",
     "cargo-doc",
     "cargo-build-release",
     "git-add-all",
@@ -96,6 +79,7 @@ dependencies = [
     "git-tag",
     "git-push",
     "git-push-tag",
+    "cargo-devlog-clean",
     "gh-release",
     "cargo-publish",
 ]
