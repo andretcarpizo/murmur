@@ -1,35 +1,33 @@
  ## Customizing Error Handling
- 
- ```rust
- use murmur::{Whisper, IconKind, WhisperError};
 
- #[derive(Debug)]
- enum CustomError {
-     WhisperError(String),
- }
+  ```rust
+use murmur::{Whisper, IconKind, WhisperError};
 
- impl From<WhisperError> for CustomError {
-     fn from(error: WhisperError) -> Self {
-         Self::WhisperError(format("We can add more info to the error: {error}"))
-     }
- }
+#[derive(Debug)]
+enum ErrorKind {
+    Whisper(WhisperError),
+}
 
- fn explicit_closure_for_error_conversion() -> Result<(), CustomError> {
-     Whisper::new()
-         .icon(IconKind::NfFaTimes)
-         .message("Explicit closure to convert a `WhisperError` into a `CustomError`.")
-         .whisper()
-         .map_err(|err| CustomError::from(err))?;
-     Ok(())
- }
+impl From<WhisperError> for ErrorKind {
+    fn from(error: WhisperError) -> Self {
+        Self::Whisper(error)
+    }
+}
 
- fn function_reference_for_error_conversion() -> Result<(), CustomError> {
-     Whisper::new()
-         .icon(IconKind::NfFaTimes)
-         .message("Function reference to convert a `WhisperError` into a `CustomError`.")
-         .whisper()
-         .map_err(CustomError::from)?;
-     Ok(())
- }
+type Result<T> = std::result::Result<T, ErrorKind>;
+
+fn whisper_message(whisper: &mut Whisper, message: &str) -> Result<()> {
+    whisper
+        .icon(IconKind::NfFaTimes)
+        .message(message)
+        .whisper()
+        .map_err(ErrorKind::from)?;
+    Ok(())
+}
+
+fn whisper_with_error_conversion(message: &str) -> Result<()> {
+    let mut whisperer = Whisper::new();
+    whisper_message(&mut whisperer, message)
+}
  ```
 
