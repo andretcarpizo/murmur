@@ -9,10 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [2.0.0] - 2023-12-26
 
 ### Breaking Changes
-- Breaking Change: NfMd Variants are deprecated and will be replaced by their equivalent NfFa Variant in the next release
 - Breaking Change: #[non_exhaustive] attribute to WhisperError enum
 - Breaking Change: non_exhaustive attribute to IconKind enumeration
-- Breaking Change: Remove all md variants from icon_map.rs
+- Breaking Change: Remove all NfMd Variants from icon_map.rs
 
 ### Changed
 - Refactor: from Mutex to RwLock on ICON_MAP .
