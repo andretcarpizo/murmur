@@ -6,7 +6,7 @@
  [![GitHub Actions](https://github.com/andretcarpizo/murmur/actions/workflows/rust.yml/badge.svg)](https://github.com/andretcarpizo/murmur/actions)
  [![License](https://img.shields.io/crates/l/murmur.svg)](https://github.com/andretcarpizo/murmur/blob/main/LICENSE.md)
 
- A flexible library to build messages with  `NerdFonts` or `Unicode` icons.
+A Rust library to build messages for cli tools with NerdFonts or Unicode icons.
 
  Table of Contents
  1. [Intro](#Intro)
